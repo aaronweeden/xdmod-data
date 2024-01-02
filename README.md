@@ -46,6 +46,9 @@ Use of the Data Analytics Framework requires an API token. To obtain an API toke
 
     **Note:** If you lose your token, simply delete it and generate a new one.
 
+## Feedback / Feature Requests
+We welcome your feedback and feature requests for the XDMoD Data Analytics Framework via email: `ccr-xdmod-help` at `buffalo.edu`.
+
 ## Support
 For support, please see [this page](https://open.xdmod.org/support.html). If you email for support, please include the following:
 * `xdmod-data` version number, obtained by running this Python code:
