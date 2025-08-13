@@ -148,12 +148,12 @@ class _HttpRequester:
         _validator._assert_runtime_context(self.__in_runtime_context)
         url = self.__xdmod_host + path
         jupyterhub_error_msg = (
-            'If running in an XDMoD-hosted JupyterHub, this is likely a server'
-            + ' error from the JupyterHub. If not running in an XDMoD-hosted'
-            + ' JupyterHub, make sure the `XDMOD_API_TOKEN` environment'
-            + ' variable is set before the `DataWarehouse` is constructed;'
-            + ' it should be set to a valid API token obtained from the XDMoD'
-            + ' portal.'
+            ' If running in an XDMoD-hosted JupyterHub, this is likely a'
+            + ' server error from the JupyterHub. If not running in an'
+            + ' XDMoD-hosted JupyterHub, make sure the `XDMOD_API_TOKEN`'
+            + ' environment variable is set before the `DataWarehouse` is'
+            + ' constructed; it should be set to a valid API token obtained'
+            + ' from the XDMoD portal.'
         )
         if self.__api_token is not None:
             token = self.__api_token
@@ -161,9 +161,7 @@ class _HttpRequester:
             try:
                 token = self.__request_json_web_token()
             except RuntimeError as e:
-                raise RuntimeError(
-                    str(e) + ' ' + jupyterhub_error_msg,
-                ) from None
+                raise RuntimeError(str(e) + jupyterhub_error_msg) from None
         headers = {
             **self.__headers,
             **{
@@ -190,18 +188,13 @@ class _HttpRequester:
             msg = ''
             try:
                 response_json = json.loads(response.text)
-                msg = ': ' + response_json['message']
+                msg = ' ' + response_json['message']
             except json.JSONDecodeError:  # pragma: no cover
                 pass
             if response.status_code == 401:
-                msg = (
-                    ': Make sure XDMOD_API_TOKEN is set to a valid API token.'
-                )
+                msg = ' Make sure XDMOD_API_TOKEN is set to a valid API token.'
             raise RuntimeError(
-                'Error '
-                + str(response.status_code)
-                + msg
-                + jupyterhub_error_msg,
+                f'Error {str(response.status_code)}.{msg}{jupyterhub_error_msg}'
             ) from None
         return response
 

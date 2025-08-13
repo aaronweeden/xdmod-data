@@ -1,4 +1,9 @@
 services:
+  # Start up a mock JupyterHub:
+  mock-jupyterhub:
+    build: mock-jupyterhub
+    ports:
+      - "5000:5000"
   # Test the minimum and maximum supported Python versions:
   python-min:
     container_name: python-min
