@@ -62,6 +62,39 @@ class DataWarehouse:
         self.__http_requester._tear_down()
         self.__in_runtime_context = False
 
+    def get_metric_data(
+        self,
+        duration,
+        realm,
+        dataset_type,
+        metric=None,
+        metrics=None,
+        group_by=None,
+        aggregation_unit='Auto',
+        only_include=None,
+        exclude=None,
+    ):
+        """Get a data frame containing metric data from the warehouse.
+
+           The data frame contains columns for "Start Date," "Metric," and
+           "Value."
+
+           Parameters
+           ----------
+        """
+        _validator._assert_runtime_context(self.__in_runtime_context)
+        params = _validator._validate_get_metric_data_params(
+            self,
+            self.__descriptors,
+            locals(),
+        )
+        response = self.__http_requester._request_metric_data(params)
+        return _response_processor._process_get_metric_data_response(
+            self,
+            params,
+            response.text,
+        )
+
     def get_data(
         self,
         duration='Previous month',
