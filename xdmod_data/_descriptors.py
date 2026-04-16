@@ -8,7 +8,12 @@ class _Descriptor:
         self.__http_requester = http_requester
         self.__cached = None
 
-    def _get_data_frame(self, data_type, realm=None):
+    def _get_data_frame(
+        self,
+        data_type,
+        realm=None,
+        drop_deprecated_names_column=True,
+    ):
         if self.__cached is None:
             self.__cached = self._request(self.__http_requester)
         if realm is not None:
@@ -24,6 +29,11 @@ class _Descriptor:
         if data_type == 'realms':
             data_frame = data_frame['label'].to_frame()
         data_frame = data_frame.rename_axis('id')
+        if drop_deprecated_names_column:
+            data_frame = data_frame.drop(
+                columns='deprecated_names',
+                errors='ignore',
+            )
         return data_frame
 
     def _get_data_id(self, data_type, value, realm=None):
@@ -31,7 +41,11 @@ class _Descriptor:
         _validator._assert_str(data_type_label, value)
         if isinstance(self, _RawDescriptor):
             data_type_label = f'raw {data_type_label}'
-        data_frame = self._get_data_frame(data_type, realm)
+        data_frame = self._get_data_frame(
+            data_type,
+            realm,
+            drop_deprecated_names_column=False,
+        )
         data_id = _utilities._get_id_from_data_frame(
             value,
             data_frame,

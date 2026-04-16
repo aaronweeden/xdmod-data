@@ -244,7 +244,7 @@ class DataWarehouse:
             data,
             columns=pd.Series(column_data, dtype='string'),
             dtype='string',
-        )
+        ).fillna(value=np.nan)
         return result
 
     def describe_realms(self):
@@ -456,10 +456,7 @@ class DataWarehouse:
                If a deprecated value is provided for `realm`.
         """
         _validator._assert_runtime_context(self.__in_runtime_context)
-        return self.__raw_descriptor._get_data_frame('fields', realm).drop(
-            columns='deprecated_names',
-            errors='ignore',
-        )
+        return self.__raw_descriptor._get_data_frame('fields', realm)
 
     def get_resources(self, service_provider=None):
         """Get a dictionary containing information about the configured
