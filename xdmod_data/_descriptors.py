@@ -43,7 +43,7 @@ class _Descriptor:
                 f' in the "{realm}" realm' if realm is not None else ''
             )
             raise KeyError(
-                f'Value for "{data_type_label}" is unknown{realm_text}:'
+                f'Value for `{data_type_label}` is unknown{realm_text}:'
                 f' "{value}"',
             ) from None
         return data_id

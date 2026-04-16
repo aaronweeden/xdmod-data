@@ -118,9 +118,7 @@ class DataWarehouse:
            filters : mapping, optional
                A mapping of dimensions to their possible values. Results will
                only be included whose values for each of the given dimensions
-               match one of the corresponding given values. If any of the
-               provided lists of values are empty, then an empty Pandas Series
-               will be returned.
+               match one of the corresponding given values.
            dataset_type : str, optional
                Either 'timeseries' or 'aggregate'.
            aggregation_unit : str, optional
@@ -196,9 +194,7 @@ class DataWarehouse:
            filters : mapping, optional
                A mapping of dimensions to their possible values. Results will
                only be included whose values for each of the given dimensions
-               match one of the corresponding given values. If any of the
-               provided lists of values are empty, then an empty Pandas Series
-               will be returned.
+               match one of the corresponding given values.
            show_progress : bool, optional
                If true, periodically print how many rows have been gotten so
                far.
@@ -462,6 +458,7 @@ class DataWarehouse:
         _validator._assert_runtime_context(self.__in_runtime_context)
         return self.__raw_descriptor._get_data_frame('fields', realm).drop(
             columns='deprecated_names',
+            errors='ignore',
         )
 
     def get_resources(self, service_provider=None):

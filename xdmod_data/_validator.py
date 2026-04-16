@@ -187,7 +187,7 @@ def __validate_filters(data_warehouse, aggregate_descriptor, realm, filters):
         raise TypeError(
             '`filters` must be a mapping whose keys are strings and whose'
             + ' values are strings or sequences of strings.',
-        )
+        ) from None
 
 
 def __assert_bool(name, value):
