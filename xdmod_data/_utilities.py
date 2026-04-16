@@ -18,7 +18,7 @@ def _get_id_from_data_frame(
             lambda deprecated_names: (
                 not pd.isna(deprecated_names)
                 and value in deprecated_names
-            )
+            ),
         )
         mask |= deprecated_names_mask
     matches = data_frame.index[mask]

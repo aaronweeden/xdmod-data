@@ -1,7 +1,7 @@
 import pandas as pd
-import warnings
 import xdmod_data._utilities as _utilities
 import xdmod_data._validator as _validator
+
 
 class _Descriptor:
     def __init__(self, http_requester):
