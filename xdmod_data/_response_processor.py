@@ -6,14 +6,16 @@ import pandas as pd
 import re
 
 
-def _process_get_data_response(dw, params, response):
-    params['metric'] = dw._get_metric_label(
-        params['realm'],
+def _process_get_data_response(aggregate_descriptor, params, response):
+    params['metric'] = aggregate_descriptor._get_label_from_id(
+        'metrics',
         params['metric'],
-    )
-    params['dimension'] = dw._get_dimension_label(
         params['realm'],
+    )
+    params['dimension'] = aggregate_descriptor._get_label_from_id(
+        'dimensions',
         params['dimension'],
+        params['realm'],
     )
     csv_data = csv.reader(response.splitlines())
     if params['dataset_type'] == 'timeseries':

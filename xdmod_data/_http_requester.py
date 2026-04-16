@@ -2,6 +2,7 @@ import json
 import os
 import re
 import requests
+from types import SimpleNamespace
 from urllib.parse import urlencode
 import xdmod_data._validator as _validator
 from xdmod_data.__version__ import __title__, __version__
@@ -30,6 +31,16 @@ class _HttpRequester:
         self.__in_runtime_context = False
 
     def _request_data(self, params):
+        # If any of the filter values are empty lists, don't bother getting the
+        # data.
+        if (
+            'filters' in params
+            and any(
+                not filter_values
+                for filter_values in params['filters'].values()
+            )
+        ):
+            return SimpleNamespace(text='')
         return self.__request(
             path='/controllers/user_interface.php',
             post_fields=self.__get_data_post_fields(params),

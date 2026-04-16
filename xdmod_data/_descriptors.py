@@ -1,21 +1,52 @@
-class _Descriptors:
+import pandas as pd
+import warnings
+import xdmod_data._utilities as _utilities
+
+class _Descriptor:
     def __init__(self, http_requester):
         self.__http_requester = http_requester
-        self.__aggregate = None
-        self.__raw = None
+        self.__cached = None
 
-    def _get_aggregate(self):
-        if self.__aggregate is None:
-            self.__aggregate = self.__request_aggregate()
-        return self.__aggregate
+    def _get_data_frame(self, data_type, realm=None):
+        if self.__cached is None:
+            self.__cached = self._request(self.__http_requester)
+        if realm is not None:
+            realm_id = self._get_data_id('realms', realm)
+        descriptor = self.__cached
+        if data_type != 'realms':
+            descriptor = descriptor[realm_id][data_type]
+        data_frame = pd.DataFrame.from_dict(
+            descriptor,
+            orient='index',
+            dtype='string',
+        )
+        if data_type == 'realms':
+            data_frame = data_frame['label'].to_frame()
+        data_frame = data_frame.rename_axis('id')
+        return data_frame
 
-    def _get_raw(self):
-        if self.__raw is None:
-            self.__raw = self.__request_raw()
-        return self.__raw
+    def _get_data_id(self, data_type, value, realm=None):
+        data_type_label = data_type.rstrip('s')
+        if isinstance(self, _RawDescriptor):
+            data_type_label = f'raw {data_type_label}'
+        data_frame = self._get_data_frame(data_type, realm)
+        return _utilities._get_id_from_data_frame(
+            value,
+            data_frame,
+            data_type_label,
+            realm,
+        )
 
-    def __request_aggregate(self):
-        response = self.__http_requester._request_json(
+    def _get_label_from_id(self, data_type, data_id, realm=None):
+        if data_type == 'dimensions' and data_id == 'none':
+            return None
+        data_frame = self._get_data_frame(data_type, realm)
+        return data_frame.loc[data_id, 'label']
+
+
+class _AggregateDescriptor(_Descriptor):
+    def _request(self, http_requester):
+        response = http_requester._request_json(
             '/controllers/metric_explorer.php',
             {'operation': 'get_dw_descripter'},
         )
@@ -23,15 +54,7 @@ class _Descriptors:
             raise RuntimeError(
                 'Descriptor received with unexpected structure.',
             )
-        return self.__deserialize_aggregate(response['data'][0]['realms'])
-
-    def __request_raw(self):
-        response = self.__http_requester._request_json(
-            '/rest/v1/warehouse/export/realms',
-        )
-        return self.__deserialize_raw(response['data'])
-
-    def __deserialize_aggregate(self, serialized_descriptor):
+        serialized_descriptor = response['data'][0]['realms']
         result = {}
         for realm in serialized_descriptor:
             result[realm] = {'label': serialized_descriptor[realm]['category']}
@@ -45,7 +68,13 @@ class _Descriptors:
                     }
         return result
 
-    def __deserialize_raw(self, serialized_descriptor):
+
+class _RawDescriptor(_Descriptor):
+    def _request(self, http_requester):
+        response = http_requester._request_json(
+            '/rest/v1/warehouse/export/realms',
+        )
+        serialized_descriptor = response['data']
         result = {}
         for realm in serialized_descriptor:
             realm_id = realm['id']
@@ -53,8 +82,11 @@ class _Descriptors:
             result[realm_id]['fields'] = {}
             fields = realm['fields']
             for field in fields:
-                result[realm_id]['fields'][field['alias']] = {
+                r = {
                     'label': field['display'],
                     'description': field['documentation'],
                 }
+                if 'deprecatedNames' in field:
+                    r['deprecated_names'] = field['deprecatedNames']
+                result[realm_id]['fields'][field['alias']] = r
         return result
