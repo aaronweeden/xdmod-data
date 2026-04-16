@@ -1,6 +1,7 @@
 import pandas as pd
 import warnings
 import xdmod_data._utilities as _utilities
+import xdmod_data._validator as _validator
 
 class _Descriptor:
     def __init__(self, http_requester):
@@ -27,15 +28,25 @@ class _Descriptor:
 
     def _get_data_id(self, data_type, value, realm=None):
         data_type_label = data_type.rstrip('s')
+        _validator._assert_str(data_type_label, value)
         if isinstance(self, _RawDescriptor):
             data_type_label = f'raw {data_type_label}'
         data_frame = self._get_data_frame(data_type, realm)
-        return _utilities._get_id_from_data_frame(
+        data_id = _utilities._get_id_from_data_frame(
             value,
             data_frame,
             data_type_label,
             realm,
         )
+        if data_id is None:
+            realm_text = (
+                f' in the "{realm}" realm' if realm is not None else ''
+            )
+            raise KeyError(
+                f'Value for "{data_type_label}" is unknown{realm_text}:'
+                f' "{value}"',
+            ) from None
+        return data_id
 
     def _get_label_from_id(self, data_type, data_id, realm=None):
         if data_type == 'dimensions' and data_id == 'none':
