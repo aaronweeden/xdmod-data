@@ -173,9 +173,9 @@ def __validate_filters(data_warehouse, aggregate_descriptor, realm, filters):
                 if new_filter_value is None:
                     warnings.warn(
                         (
-                            f'The filter value "{filter_value}" was not found'
-                            f' for the "{dimension}" dimension in the'
-                            f' "{realm}" realm.'
+                            f"Filter value not found for the '{dimension}'"
+                            f" dimension in the '{realm}' realm:"
+                            f' {filter_value!r}'
                         ),
                         UserWarning,
                         stacklevel=4,
@@ -201,9 +201,10 @@ def __find_str_in_sequence(value, sequence, label):
         transformed_valid_value = __lowercase_and_remove_spaces(valid_value)
         if transformed_valid_value == transformed_value:
             return valid_value
+    sequence_str = "', '".join(sequence)
     raise KeyError(
-        'Invalid value for `' + label + "`: '" + value + "'"
-        + ". Valid values are: '" + "', '".join(sequence) + "'.",
+        f"Value for `{label}` not found: '{value}'. Valid values are:"
+        f" '{sequence_str}'.",
     ) from None
 
 
@@ -213,7 +214,9 @@ def __validate_raw_fields(raw_descriptor, realm, fields):
         for field in fields:
             field_id = raw_descriptor._get_data_id('fields', field, realm)
             if field_id is None:
-                raise KeyError(f'Raw field "{field}" not found.') from None
+                raise KeyError(
+                    f"Raw field not found in the {realm} realm: '{field}'.",
+                ) from None
             results.append(field_id)
         return results
     except TypeError:

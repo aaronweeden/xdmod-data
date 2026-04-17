@@ -45,14 +45,16 @@ def __warn_if_deprecated_name(
     realm,
 ):
     label = data_frame.loc[data_id, 'label']
-    alternative = label if data_id == label else f'{data_id}" or "{label}'
-    realm_text = f' in the "{realm}" realm' if realm is not None else ''
+    alternative = label
+    if data_id != label:
+        alternative = f"{data_id}' or '{label}"
+    realm_text = f" in the '{realm}' realm" if realm is not None else ''
     if deprecated_names_mask.any():
         warnings.warn(
             (
-                f'The {data_type_label} name "{name}"{realm_text} is'
+                f"The {data_type_label} name '{name}'{realm_text} is"
                 f' deprecated and will be removed in a future version of'
-                f' XDMoD. Use "{alternative}" instead.'
+                f" XDMoD. Use '{alternative}' instead."
             ),
             FutureWarning,
             stacklevel=7,

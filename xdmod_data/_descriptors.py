@@ -34,13 +34,13 @@ class _Descriptor:
                 columns='deprecated_names',
                 errors='ignore',
             )
+        data_frame.index = data_frame.index.astype('string')
+        data_frame.columns = data_frame.columns.astype('string')
         return data_frame
 
     def _get_data_id(self, data_type, value, realm=None):
-        data_type_label = data_type.rstrip('s')
-        _validator._assert_str(data_type_label, value)
-        if isinstance(self, _RawDescriptor):
-            data_type_label = f'raw {data_type_label}'
+        param_name = data_type.rstrip('s')
+        _validator._assert_str(param_name, value)
         data_frame = self._get_data_frame(
             data_type,
             realm,
@@ -49,16 +49,15 @@ class _Descriptor:
         data_id = _utilities._get_id_from_data_frame(
             value,
             data_frame,
-            data_type_label,
+            param_name,
             realm,
         )
         if data_id is None:
             realm_text = (
-                f' in the "{realm}" realm' if realm is not None else ''
+                f" in the '{realm}' realm" if realm is not None else ''
             )
             raise KeyError(
-                f'Value for `{data_type_label}` is unknown{realm_text}:'
-                f' "{value}"',
+                f"Value for `{param_name}` not found{realm_text}: '{value}'",
             ) from None
         return data_id
 
