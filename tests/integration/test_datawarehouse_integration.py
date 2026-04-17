@@ -52,13 +52,15 @@ VALID_VALUES = {
 }
 KEY_ERROR_TEST_VALUES_AND_MATCHES = {
     'duration': (INVALID_STR, 'Invalid value for `duration`'),
-    'realm': (INVALID_STR, r'Realm .* not found'),
-    'metric': (INVALID_STR, r'Metric .* not found'),
-    'dimension': (INVALID_STR, r'Dimension .* not found'),
-    'filter_key': ({INVALID_STR: INVALID_STR}, r'Dimension .* not found'),
-    'filter_value': (
-        {VALID_DIMENSION: INVALID_STR},
-        r'Filter value .* not found',
+    'realm': (INVALID_STR, f'Value for `realm` is unknown: "{INVALID_STR}"'),
+    'metric': (INVALID_STR, f'Value for `metric` is unknown: "{INVALID_STR}"'),
+    'dimension': (
+        INVALID_STR,
+        f'Value for `dimension` is unknown: "{INVALID_STR}"',
+    ),
+    'filter_key': (
+        {INVALID_STR: INVALID_STR},
+        f'Value for `dimension` is unknown: "{INVALID_STR}"',
     ),
     'dataset_type': (INVALID_STR, 'Invalid value for `dataset_type`'),
     'aggregation_unit': (INVALID_STR, 'Invalid value for `aggregation_unit`'),
