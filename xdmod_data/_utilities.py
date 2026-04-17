@@ -12,6 +12,8 @@ def _get_id_from_data_frame(
         (data_frame.index == value)
         | (data_frame['label'] == value)
     )
+    if 'deprecated' in data_frame.columns:
+        mask |= data_frame['deprecated'].apply(lambda x: not pd.isna(x) and x)
     deprecated_names_mask = pd.Series(False, index=data_frame.index)
     if 'deprecated_names' in data_frame.columns:
         deprecated_names_mask = data_frame['deprecated_names'].apply(
@@ -25,7 +27,7 @@ def _get_id_from_data_frame(
     if matches.empty:
         return None
     data_id = matches[0]
-    __warn_if_deprecated_name(
+    __warn_if_deprecated(
         value,
         data_frame,
         data_type_label,
@@ -36,7 +38,7 @@ def _get_id_from_data_frame(
     return data_id
 
 
-def __warn_if_deprecated_name(
+def __warn_if_deprecated(
     name,
     data_frame,
     data_type_label,
@@ -44,17 +46,32 @@ def __warn_if_deprecated_name(
     deprecated_names_mask,
     realm,
 ):
-    label = data_frame.loc[data_id, 'label']
-    alternative = label
-    if data_id != label:
-        alternative = f"{data_id}' or '{label}"
-    realm_text = f" in the '{realm}' realm" if realm is not None else ''
-    if deprecated_names_mask.any():
+    realm_text = ''
+    warn = False
+    if realm is not None:
+        realm_text = f" in the '{realm}' realm"
+    if (
+        'deprecated' in data_frame.columns
+        and data_frame.loc[data_id, 'deprecated']
+    ):
+        alternative_text = data_frame.loc[data_id, 'description'].replace(
+            'DEPRECATED: ',
+            '',
+        )
+        warn = True
+    elif deprecated_names_mask.any():
+        label = data_frame.loc[data_id, 'label']
+        alternative = label
+        if data_id != label:
+            alternative = f"{data_id}' or '{label}"
+        alternative_text = f"Use '{alternative} instead."
+        warn = True
+    if warn:
         warnings.warn(
             (
                 f"The {data_type_label} name '{name}'{realm_text} is"
                 f' deprecated and will be removed in a future version of'
-                f" XDMoD. Use '{alternative}' instead."
+                f" XDMoD. {alternative_text}"
             ),
             FutureWarning,
             stacklevel=7,

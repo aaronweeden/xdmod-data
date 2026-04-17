@@ -12,7 +12,7 @@ class _Descriptor:
         self,
         data_type,
         realm=None,
-        drop_deprecated_names_column=True,
+        drop_deprecation_columns=True,
     ):
         if self.__cached is None:
             self.__cached = self._request(self.__http_requester)
@@ -29,9 +29,9 @@ class _Descriptor:
         if data_type == 'realms':
             data_frame = data_frame['label'].to_frame()
         data_frame = data_frame.rename_axis('id')
-        if drop_deprecated_names_column:
+        if drop_deprecation_columns:
             data_frame = data_frame.drop(
-                columns='deprecated_names',
+                columns=['deprecated', 'deprecated_names'],
                 errors='ignore',
             )
         data_frame.index = data_frame.index.astype('string')
@@ -44,7 +44,7 @@ class _Descriptor:
         data_frame = self._get_data_frame(
             data_type,
             realm,
-            drop_deprecated_names_column=False,
+            drop_deprecation_columns=False,
         )
         data_id = _utilities._get_id_from_data_frame(
             value,
@@ -110,6 +110,8 @@ class _RawDescriptor(_Descriptor):
                     'label': field['display'],
                     'description': field['documentation'],
                 }
+                if 'deprecated' in field:
+                    r['deprecated'] = field['deprecated']
                 if 'deprecatedNames' in field:
                     r['deprecated_names'] = field['deprecatedNames']
                 result[realm_id]['fields'][field['alias']] = r
