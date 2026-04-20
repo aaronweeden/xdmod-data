@@ -12,8 +12,6 @@ def _get_id_from_data_frame(
         (data_frame.index == value)
         | (data_frame['label'] == value)
     )
-    if 'deprecated' in data_frame.columns:
-        mask |= data_frame['deprecated'].apply(lambda x: not pd.isna(x) and x)
     deprecated_names_mask = pd.Series(False, index=data_frame.index)
     if 'deprecated_names' in data_frame.columns:
         deprecated_names_mask = data_frame['deprecated_names'].apply(
@@ -50,21 +48,20 @@ def __warn_if_deprecated(
     warn = False
     if realm is not None:
         realm_text = f" in the '{realm}' realm"
-    if (
-        'deprecated' in data_frame.columns
-        and data_frame.loc[data_id, 'deprecated']
-    ):
-        alternative_text = data_frame.loc[data_id, 'description'].replace(
-            'DEPRECATED: ',
-            '',
-        )
-        warn = True
-    elif deprecated_names_mask.any():
+    if 'deprecated' in data_frame.columns:
+        deprecated = data_frame.loc[data_id, 'deprecated']
+        if not pd.isna(deprecated) and deprecated:
+            alternative_text = data_frame.loc[data_id, 'description'].replace(
+                'DEPRECATED: ',
+                '',
+            )
+            warn = True
+    if deprecated_names_mask.any():
         label = data_frame.loc[data_id, 'label']
         alternative = label
         if data_id != label:
             alternative = f"{data_id}' or '{label}"
-        alternative_text = f"Use '{alternative} instead."
+        alternative_text = f"Use '{alternative}' instead."
         warn = True
     if warn:
         warnings.warn(
