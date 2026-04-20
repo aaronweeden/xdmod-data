@@ -56,7 +56,7 @@ def __warn_if_deprecated(
                 '',
             )
             warn = True
-    if deprecated_names_mask.any():
+    if not warn and deprecated_names_mask.any():
         label = data_frame.loc[data_id, 'label']
         alternative = label
         if data_id != label:
