@@ -446,6 +446,22 @@ class DataWarehouse:
         _validator._assert_runtime_context(self.__in_runtime_context)
         return self.__http_requester._request_resources(service_provider)
 
+    def whoami(self):
+        """Get a dictionary containing information about the authenticated
+           user who is making requests to the XDMoD portal.
+
+           Returns
+           -------
+           dict
+
+           Raises
+           ------
+           RuntimeError
+               If this method is called outside the runtime context.
+        """
+        _validator._assert_runtime_context(self.__in_runtime_context)
+        return self.__http_requester._request_user_data()
+
     def _get_metric_label(self, realm, metric_id):
         d = self.__descriptors._get_aggregate()
         return d[realm]['metrics'][metric_id]['label']

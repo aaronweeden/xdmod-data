@@ -155,3 +155,13 @@ def __get_timeseries_data_frame_columns(dw, params, dimension_values):
             name=params['dimension'],
         )
     return columns
+
+
+def __process_user_data_response(response):
+    keys_to_return = {
+        'first_name',
+        'last_name',
+        'person_id',
+        'organization_id',
+    }
+    return {key: response[key] for key in keys_to_return}
