@@ -439,7 +439,8 @@ class DataWarehouse:
            Raises
            ------
            RuntimeError
-               If this method is called outside the runtime context.
+               If this method is called outside the runtime context or if
+               there is an error requesting data from the warehouse.
            TypeError
                If `service_provider` is provided and is not a string.
         """
@@ -447,17 +448,21 @@ class DataWarehouse:
         return self.__http_requester._request_resources(service_provider)
 
     def whoami(self):
-        """Get a dictionary containing information about the authenticated
-           user who is making requests to the XDMoD portal.
+        """Get information about the authenticated user who is making requests
+           to the XDMoD portal.
 
            Returns
            -------
            dict
+               A dictionary containing keys for `first_name`, `last_name`,
+               `person_id`, and `organization_id` according to the XDMoD
+               portal.
 
            Raises
            ------
            RuntimeError
-               If this method is called outside the runtime context.
+               If this method is called outside the runtime context or if
+               there is an error requesting data from the warehouse.
         """
         _validator._assert_runtime_context(self.__in_runtime_context)
         return self.__http_requester._request_user_data()
