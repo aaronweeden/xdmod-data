@@ -132,17 +132,10 @@ class _HttpRequester:
         )
 
     def _request_user_data(self):
-        response = self.__try_possibly_unsupported_method(
+        return self.__try_possibly_unsupported_method(
             path='/rest/v1/users/current',
             method_name='whoami',
         )
-        keys_to_return = {
-            'first_name',
-            'last_name',
-            'person_id',
-            'organization_id',
-        }
-        return {key: response[key] for key in keys_to_return}
 
     def _request_json(self, path, post_fields=None):
         response = self.__request(path, post_fields)
