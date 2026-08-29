@@ -13,37 +13,33 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Lint
-          command: |
-            python3 -m pip install --upgrade flake8 flake8-commas flake8-quotes
-            python3 -m flake8 . --max-complexity=10 --max-line-length=160 --show-source --exclude __init__.py
-  tests:
+          name: Install Flake8
+          command: python3 -m pip install --upgrade flake8 flake8-commas flake8-quotes
+      - run:
+          name: Run Flake8
+          command: python3 -m flake8 . --max-complexity=10 --max-line-length=160 --show-source --exclude __init__.py
+  run_tests:
     docker:
       - image: cimg/python:<< pipeline.parameters.max_python_version >>
-
-      - image: tools-ext-01.ccr.xdmod.org/xdmod:xdmod-data-main-dev
-        name: xdmod-main-dev
-        environment:
-          CONTAINER_NAME: xdmod-main-dev
-      - image: tools-ext-01.ccr.xdmod.org/xdmod:xdmod-data-11-0-dev
-        name: xdmod-11-0-dev
-        environment:
-          CONTAINER_NAME: xdmod-11-0-dev
-      - image: tools-ext-01.ccr.xdmod.org/xdmod:xdmod-data-11-0
-        name: xdmod-11-0
-        environment:
-          CONTAINER_NAME: xdmod-11-0
+      - image: tools-ext-01.ccr.xdmod.org/xdmod:xdmod-data-main
+        name: xdmod-main
+      - image: tools-ext-01.ccr.xdmod.org/xdmod:xdmod-data-xdmod-11_0
+        name: xdmod-data-xdmod-11_0
+      - image: tools-ext-01.ccr.xdmod.org/xdmod:xdmod-data-v11_0_0-1_0
+        name: xdmod-data-v11_0_0-1_0
     steps:
       - checkout
       - run:
-          name: Run Tests
+          name: Setup
+          command: ./tests/ci/scripts/setup.sh
+      - run:
+          name: Run tests
           command: ./tests/ci/scripts/run_tests.sh
-
 
 workflows:
   lint:
     jobs:
       - lint
-  tests:
+  run_tests:
     jobs:
-      - tests
+      - run_tests
