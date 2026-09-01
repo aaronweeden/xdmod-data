@@ -50,7 +50,7 @@ class _HttpRequester:
         if response.headers["Content-Type"] == "application/json-seq":
             for line in response.iter_lines():
                 line_text = line.decode("utf-8").replace("\x1e", "")
-                (data, fields) = self.__process_raw_data_response_row(
+                data, fields = self.__process_raw_data_response_row(
                     line_text,
                     num_rows_read,
                     params["show_progress"],
@@ -77,7 +77,7 @@ class _HttpRequester:
                 # The last line will be of size 0 and should not be
                 # processed.
                 elif last_line_size != "0":  # pragma: no branch
-                    (data, fields) = self.__process_raw_data_response_row(
+                    data, fields = self.__process_raw_data_response_row(
                         line_text,
                         num_rows_read,
                         params["show_progress"],

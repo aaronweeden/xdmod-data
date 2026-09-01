@@ -3,7 +3,6 @@ import os
 import requests
 from xdmod_data.warehouse import DataWarehouse
 
-
 VALID_XDMOD_HOST = os.environ["XDMOD_HOST"]
 INVALID_STR = "asdlkfjsdlkfisdjkfjd"
 

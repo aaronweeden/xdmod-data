@@ -16,9 +16,7 @@ def _assert_runtime_context(in_runtime_context):
 
 def _validate_get_data_params(data_warehouse, descriptors, params):
     results = {}
-    (results["start_date"], results["end_date"]) = __validate_duration(
-        params["duration"]
-    )
+    results["start_date"], results["end_date"] = __validate_duration(params["duration"])
     results["realm"] = _find_realm_id(descriptors, params["realm"])
     results["metric"] = __find_metric_id(
         descriptors,
@@ -51,9 +49,7 @@ def _validate_get_data_params(data_warehouse, descriptors, params):
 
 def _validate_get_raw_data_params(data_warehouse, descriptors, params):
     results = {}
-    (results["start_date"], results["end_date"]) = __validate_duration(
-        params["duration"]
-    )
+    results["start_date"], results["end_date"] = __validate_duration(params["duration"])
     results["realm"] = _find_raw_realm_id(descriptors, params["realm"])
     results["fields"] = __validate_raw_fields(
         data_warehouse,
@@ -146,10 +142,10 @@ def __validate_duration(duration):
             _get_durations(),
             "duration",
         )
-        (start_date, end_date) = __get_dates_from_duration(duration)
+        start_date, end_date = __get_dates_from_duration(duration)
     else:
         try:
-            (start_date, end_date) = duration
+            start_date, end_date = duration
         except (TypeError, ValueError) as error:
             raise type(error)(
                 "`duration` must be a string or an object" + " with 2 items.",

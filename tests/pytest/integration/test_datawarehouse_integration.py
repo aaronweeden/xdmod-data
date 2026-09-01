@@ -88,7 +88,7 @@ for method in METHOD_PARAMS:
         type_error_test_params += [(method, param)]
         if param in KEY_ERROR_TEST_VALUES_AND_MATCHES:
             key_error_test_ids += [method + ":" + param]
-            (value, match) = KEY_ERROR_TEST_VALUES_AND_MATCHES[param]
+            value, match = KEY_ERROR_TEST_VALUES_AND_MATCHES[param]
             key_error_test_params += [(method, {param: value}, match)]
         if param == "duration":
             duration_test_ids += [method]
@@ -112,7 +112,7 @@ for method in METHOD_PARAMS:
     if "filters" in METHOD_PARAMS[method]:
         for param in ("filter_key", "filter_value"):
             key_error_test_ids += [method + ":" + param]
-            (value, match) = KEY_ERROR_TEST_VALUES_AND_MATCHES[param]
+            value, match = KEY_ERROR_TEST_VALUES_AND_MATCHES[param]
             key_error_test_params += [(method, {"filters": value}, match)]
 
 

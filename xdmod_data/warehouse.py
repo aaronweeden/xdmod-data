@@ -219,7 +219,7 @@ class DataWarehouse:
             self.__descriptors,
             locals(),
         )
-        (data, column_data) = self.__http_requester._request_raw_data(params)
+        data, column_data = self.__http_requester._request_raw_data(params)
         return self.__get_data_frame(data, column_data)
 
     def describe_realms(self):
