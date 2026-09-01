@@ -18,9 +18,7 @@ else:
 
 # Run the tests against each XDMoD container.
 for image in get_config.get_xdmod_images():
-    container_name = get_config.get_container_name(image)
-    if container_name is None:
-        container_name = image
+    container_name = get_config.get_container_name(image, default=image)
     print(f"Running tests for {container_name}", flush=True)
     os.environ["REQUESTS_CA_BUNDLE"] = f"{container_name}.crt"
     os.environ["XDMOD_CONTAINER"] = image.replace("xdmod-data-", "")

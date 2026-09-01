@@ -19,10 +19,8 @@ import get_config
 
 # Generate the config.
 docker_compose_config = "services:"
-project_directory = Path(__file__).resolve().parent / ".." / ".."
-network_name = get_config.get_network_name()
-if network_name is None:
-    network_name = "xdmod-data-network"
+project_dir = parent_dir / ".." / ".."
+network_name = get_config.get_network_name(default="xdmod-data-network")
 for python_version in [
     get_config.get_min_python_version(),
     get_config.get_max_python_version(),
@@ -30,10 +28,9 @@ for python_version in [
     container_name = get_config.get_container_name(
         "python-min"
         if python_version == get_config.get_min_python_version()
-        else "python-max"
+        else "python-max",
+        default=f"xdmod-data-python-{python_version}",
     )
-    if container_name is None:
-        container_name = f"xdmod-data-python-{python_version}"
     if container_name != "null":
         docker_compose_config += f"""
   {container_name}:
@@ -47,9 +44,7 @@ for python_version in [
       - {project_directory}:/home/circleci/project
 """
 for image in get_config.get_xdmod_images():
-    container_name = get_config.get_container_name(image)
-    if container_name is None:
-        container_name = image
+    container_name = get_config.get_container_name(image, default=image)
     docker_compose_config += f"""
   {container_name}:
     image: tools-ext-01.ccr.xdmod.org/xdmod:{image}
