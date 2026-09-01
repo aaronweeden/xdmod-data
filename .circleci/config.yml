@@ -12,7 +12,7 @@ jobs:
       - checkout
       - run:
           name: Generate config
-          command: python3 ./circleci/generate_config.py > generated_config.yml
+          command: python3 generate_config.py > generated_config.yml
       - continuation/continue:
           configuration_path: generated_config.yml
 
