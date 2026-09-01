@@ -8,7 +8,7 @@ import sys
 import warnings
 
 subprocess.run(
-    "python3 -m pip install -e .[report] pytest pytest-cov python-dotenv pyyaml".split(),
+    "python3 -m pip install -e .[report] pytest pytest-cov python-dotenv pyyaml tomli".split(),
     check=True,
 )
 

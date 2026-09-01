@@ -7,13 +7,12 @@ orbs:
 
 jobs:
   setup:
-    docker:
-      - image: cimg/python:3.11  # Use >= 3.11 so TOML parser is available
+    executor: continuation/default
     steps:
       - checkout
       - run:
           name: Install YAML parser
-          command: python3 -m pip install pyyaml
+          command: python3 -m pip install pyyaml tomli
       - run:
           name: Generate config
           command: python3 .circleci/generate_config.py > generated_config.yml

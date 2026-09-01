@@ -52,9 +52,9 @@ CircleCI setup. You will need to have Docker running and follow these steps:
     docker exec xdmod-data-python-3.14 python3 ./tests/scripts/setup.py
     ```
 1. If you will be testing the minimum Python version, downgrade the
-   dependencies in that container. For example, for Python 3.11:
+   dependencies in that container. For example, for Python 3.8:
     ```
-    docker exec xdmod-data-python-3.11 python3 ./tests/scripts/downgrade_dependencies.py
+    docker exec xdmod-data-python-3.8 python3 ./tests/scripts/downgrade_dependencies.py
     ```
 1. Run the tests in each Python container you want to test with. For example,
    for Python 3.14:

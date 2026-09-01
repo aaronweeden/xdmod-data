@@ -2,13 +2,13 @@
 # use these data without having to define them in multiple places.
 
 from pathlib import Path
-import tomllib
+import tomli
 import yaml
 
 with open(
     Path(__file__).resolve().parent / ".." / ".." / "pyproject.toml", "rb"
 ) as pyproject_file:
-    pyproject_config = tomllib.load(pyproject_file)
+    pyproject_config = tomli.load(pyproject_file)
 
 with open(
     Path(__file__).resolve().parent / ".." / "config.yml", "r"

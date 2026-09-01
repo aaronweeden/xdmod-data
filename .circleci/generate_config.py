@@ -32,7 +32,7 @@ jobs:
           name: Check code style with Black
           command: python3 -m black --check --target-version=py{max_python_version.replace('.', '')} .
       - run:
-          name: Run Flake8 to check McCabe complexity
+          name: Run Flake8 to check cyclomatic complexity
           command: python3 -m flake8 --select=C90 --max-complexity=10 .
 """
 for python_version in [min_python_version, max_python_version]:
