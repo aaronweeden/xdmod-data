@@ -25,12 +25,8 @@ jobs:
     resource_class: small
     steps:
       - checkout
-      - run:
-          name: Install dependencies
-          command: python3 -m pip install --upgrade black flake8 tomli
-      - run:
-          name: Lint
-          command: ./tests/scripts/lint.sh
+      - run: ./tests/scripts/install_dependencies.sh
+      - run: ./tests/scripts/lint.sh
 """
 for python_version in [min_python_version, max_python_version]:
     output_config += f"""

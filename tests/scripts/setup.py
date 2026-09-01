@@ -6,8 +6,10 @@ import subprocess
 import sys
 import warnings
 
+parent_dir = Path(__file__).resolve().parent
+
 subprocess.run(
-    "python3 -m pip install -e .[report] black coverage flake8 pytest python-dotenv pyyaml tenacity tomli".split(),
+    "{parent_dir}/install_dependencies.sh".split(),
     check=True,
 )
 
