@@ -23,7 +23,7 @@ CircleCI setup. You will need to have Docker running and follow these steps:
    from `xdmod_images` to the container names. You can also rename the
    containers used for testing the minimum and maximum Python versions by
    defining names for `python-min` and `python-max`, respectively. You can also
-   set either one of these to `null` in which case the corresponding Python
+   set either one of these to `null`, in which case the corresponding Python
    container will not be created. Note that you do NOT need to rename every
    container. You can rename the network using the `network_name` property. For
    example, the following definition will rename only the last two XDMoD
