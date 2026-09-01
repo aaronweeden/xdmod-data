@@ -30,7 +30,11 @@ for python_version in [
     get_config.get_min_python_version(),
     get_config.get_max_python_version(),
 ]:
-    container_name = get_config.get_container_name('python-min' if python_version == get_config.get_min_python_version() else 'python-max')
+    container_name = get_config.get_container_name(
+        "python-min"
+        if python_version == get_config.get_min_python_version()
+        else "python-max"
+    )
     if container_name is None:
         container_name = f"xdmod-data-python-{python_version}"
     if container_name != "null":

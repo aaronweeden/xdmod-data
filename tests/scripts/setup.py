@@ -27,7 +27,7 @@ for image in get_config.get_xdmod_images():
         container_name = image
 
     # Get the certificate file from the XDMoD container.
-    print(f'Getting certificate file from {container_name}')
+    print(f"Getting certificate file from {container_name}")
     with warnings.catch_warnings():
         warnings.simplefilter("ignore", InsecureRequestWarning)
         response = requests.get(f"https://{container_name}/localhost.crt", verify=False)
@@ -40,7 +40,7 @@ for image in get_config.get_xdmod_images():
     session.verify = f"{container_name}.crt"
 
     # Get an auth token.
-    print(f'Getting auth token from {container_name}')
+    print(f"Getting auth token from {container_name}")
     response = session.post(
         f"https://{container_name}/rest/auth/login",
         data={"username": "normaluser", "password": "normaluser"},
@@ -49,7 +49,7 @@ for image in get_config.get_xdmod_images():
     auth_token = response.json()["results"]["token"]
 
     # Delete any API token that already exists.
-    print(f'Deleting API token on {container_name}')
+    print(f"Deleting API token on {container_name}")
     response = session.delete(
         f"https://{container_name}/rest/users/current/api/token?token={auth_token}"
     )
@@ -57,13 +57,13 @@ for image in get_config.get_xdmod_images():
         response.raise_for_status()
 
     # Create an API token.
-    print(f'Creating API token on {container_name}')
+    print(f"Creating API token on {container_name}")
     response = session.post(
         f"https://{container_name}/rest/users/current/api/token?token={auth_token}"
     )
     response.raise_for_status()
 
     # Save the API token to a file.
-    print(f'Saving API token to {container_name}.token')
+    print(f"Saving API token to {container_name}.token")
     with open(f"{container_name}.token", "w") as token_file:
         token_file.write(f"XDMOD_API_TOKEN={response.json()['data']['token']}")
