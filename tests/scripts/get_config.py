@@ -34,13 +34,15 @@ def get_xdmod_images():
 
 def get_container_name(image, default):
     if "container_names" not in tests_config:
-        return None
+        return default
     if image not in tests_config["container_names"]:
-        return None
+        return default
     if tests_config["container_names"][image] is None:
         return "null"
     return tests_config["container_names"][image]
 
 
 def get_network_name(default):
-    return tests_config["network_name"] if "network_name" in tests_config else None
+    if "network_name" not in tests_config or tests_config["network_name"] is None:
+        return default
+    return tests_config["network_name"]

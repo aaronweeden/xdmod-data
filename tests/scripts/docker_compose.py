@@ -38,7 +38,7 @@ for python_version in [
     tty: true
     user: root
     volumes:
-      - {project_directory}:/home/circleci/project
+      - {project_dir}:/home/circleci/project
 """
 for image in get_config.get_xdmod_images():
     container_name = get_config.get_container_name(image, default=image)
