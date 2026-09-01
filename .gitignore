@@ -5,3 +5,5 @@ docs/_build/
 *.egg-info/
 __pycache__/
 .*.sw?
+*.crt
+*.token

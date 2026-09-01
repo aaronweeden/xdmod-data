@@ -1,0 +1,8 @@
+# Define values for testing.
+# See docs/developing.md for local testing instructions.
+
+max_python_version: 3.14
+xdmod_images:
+  - xdmod-data-main
+  - xdmod-data-xdmod11_0
+  - xdmod-data-v11_0_0-1_0

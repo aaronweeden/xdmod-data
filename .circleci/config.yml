@@ -1,45 +1,22 @@
 version: 2.1
 
-parameters:
-  max_python_version:
-    type: string
-    default: "3.14"
+setup: true
+
+orbs:
+  continuation: circleci/continuation@2.0.1
 
 jobs:
-  lint:
-    docker:
-      - image: cimg/python:<< pipeline.parameters.max_python_version >>
-    resource_class: small
+  setup:
+    executor: continuation/default
     steps:
       - checkout
       - run:
-          name: Install Flake8
-          command: python3 -m pip install --upgrade flake8 flake8-commas flake8-quotes
-      - run:
-          name: Run Flake8
-          command: python3 -m flake8 . --max-complexity=10 --max-line-length=160 --show-source --exclude __init__.py
-  run_tests:
-    docker:
-      - image: cimg/python:<< pipeline.parameters.max_python_version >>
-      - image: tools-ext-01.ccr.xdmod.org/xdmod:xdmod-data-main
-        name: xdmod-main
-      - image: tools-ext-01.ccr.xdmod.org/xdmod:xdmod-data-xdmod-11_0
-        name: xdmod-data-xdmod-11_0
-      - image: tools-ext-01.ccr.xdmod.org/xdmod:xdmod-data-v11_0_0-1_0
-        name: xdmod-data-v11_0_0-1_0
-    steps:
-      - checkout
-      - run:
-          name: Setup
-          command: ./tests/ci/scripts/setup.sh
-      - run:
-          name: Run tests
-          command: ./tests/ci/scripts/run_tests.sh
+          name: Generate config
+          command: python3 ./circleci/generate_config.py > generated_config.yml
+      - continuation/continue:
+          configuration_path: generated_config.yml
 
 workflows:
-  lint:
+  setup:
     jobs:
-      - lint
-  run_tests:
-    jobs:
-      - run_tests
+      - setup

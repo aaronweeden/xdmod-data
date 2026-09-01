@@ -1,0 +1,79 @@
+# Set up a Docker Compose application stack for local testing.
+# See docs/developing.md for local testing instructions.
+
+from pathlib import Path
+import subprocess
+import sys
+
+# Make sure either 'up' or 'down' was specified.
+if len(sys.argv) == 2 and sys.argv[1] in ["up", "down"]:
+    command = sys.argv[1]
+else:
+    sys.exit(
+        f"""Usage: {sys.argv[0]} <command>
+    <command> must be either 'up' or 'down'"""
+    )
+
+# Import the script for getting config data.
+dir_ = Path(__file__).resolve().parent
+if str(dir_) not in sys.path:
+    sys.path.insert(0, str(dir_))
+import get_config
+
+# Generate the config.
+docker_compose_config = "services:"
+project_directory = Path(__file__).resolve().parent / ".." / ".."
+network_name = get_config.get_network_name()
+if network_name is None:
+    network_name = "xdmod-data-network"
+for python_version in [
+    get_config.get_min_python_version(),
+    get_config.get_max_python_version(),
+]:
+    container_name = get_config.get_container_name('python-min' if python_version == get_config.get_min_python_version() else 'python-max')
+    if container_name is None:
+        container_name = f"xdmod-data-python-{python_version}"
+    if container_name != "null":
+        docker_compose_config += f"""
+  {container_name}:
+    image: cimg/python:{python_version}
+    container_name: {container_name}
+    networks:
+      - {network_name}
+    tty: true
+    user: root
+    volumes:
+      - {project_directory}:/home/circleci/project
+"""
+for image in get_config.get_xdmod_images():
+    container_name = get_config.get_container_name(image)
+    if container_name is None:
+        container_name = image
+    docker_compose_config += f"""
+  {container_name}:
+    image: tools-ext-01.ccr.xdmod.org/xdmod:{image}
+    container_name: {container_name}
+    networks:
+      - {network_name}
+"""
+docker_compose_config += f"""
+networks:
+  {network_name}:
+    name: {network_name}
+"""
+
+
+# Run the Docker Compose command.
+def run(command):
+    subprocess.run(
+        f"docker compose -f - {command}".split(),
+        input=docker_compose_config,
+        text=True,
+        check=True,
+    )
+
+
+if command == "up":
+    run("up -d")
+elif command == "down":
+    run("down")

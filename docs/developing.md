@@ -3,26 +3,79 @@
 ## Testing the code
 
 CircleCI will automatically run tests on Pull Requests to the `xdmod-data`
-GitHub repository. To test the code manually/locally, you will need to have
-Docker running and to follow these steps:
+GitHub repository. `xdmod-data` will be tested against multiple Open XDMoD
+portals, each running a different branch/tag of the `xdmod` repository. Each
+Open XDMoD portal runs in a Docker container; the images for these are hosted
+in the registry `tools-ext-01.ccr.xdmod.org/xdmod`, and the tags used for
+testing are defined in `tests/config.yml` under `xdmod_images`.
 
-1. Edit `tests/ci/artifacts/manual.env` to set the desired values.
-1. Run the following command to read those values into the environment:
+`tests/config.yml` also defines the maximum Python version that should be
+tested. This version will be tested along with the minimum supported versions
+of Python and `xdmod-data`'s dependencies, as defined in `pyproject.toml`.
+The two versions of Python will be tested in their own containers using the
+CircleCI `cimg/python` convenience images.
+
+Testing the code manually/locally involves using Docker Compose to emulate the
+CircleCI setup. You will need to have Docker running and follow these steps:
+
+1. If you wish to rename the containers and/or network that will be created,
+   edit `tests/config.yml` and add a `container_names` property that maps names
+   from `xdmod_images` to the container names. You can also rename the
+   containers used for testing the minimum and maximum Python versions by
+   defining names for `python-min` and `python-max`, respectively. You can also
+   set either one of these to `null` in which case the corresponding Python
+   container will not be created. Note that you do NOT need to rename every
+   container. You can rename the network using the `network_name` property. For
+   example, the following definition will rename only the last two XDMoD
+   containers as well as the container that tests the maximum Python version
+   and the network. It also makes it so the minimum Python container is not
+   created:
+    ```yaml
+    xdmod_images:
+      - xdmod-data-main
+      - xdmod-data-xdmod11_0
+      - xdmod-data-v11_0_0-1_0
+    container_names:
+      xdmod-data-xdmod11_0: my_custom_name_1
+      xdmod-data-v11_0_0-1_0: my_custom_name_2
+      python-min: null
+      python-max: my_custom_name_3
+    network: my_custom_name_4
     ```
-    set -a && source tests/ci/artifacts/manual.env && set +a
+1. Start up the Docker Compose application stack:
     ```
-1. Execute `tests/ci/scripts/build_xdmod_img.sh` to run an XDMoD container
-   using the values you set in the previous step.
-1. Execute `tests/ci/scripts/run_tests.sh` to run the tests against the XDMoD
-   container and the current directory's version of `xdmod-data` and generate
-   a coverage file in `.coverage.${PYTHON_VERSION}.${XDMOD_VERSION}` (note that
-   `PYTHON_VERSION` does not need to be defined).
-1. If you wish to manually test code coverage, you can run these steps again
-   for the other versions of XDMoD, then run
-   `tests/ci/scripts/generate_coverage_report.sh`.
+    python3 ./tests/scripts/docker_compose.py up
+    ```
+1. Set up each of the Python containers you want to test with. For example, for
+   Python 3.14:
+    ```
+    docker exec xdmod-data-python-3.14 python3 ./tests/scripts/setup.py
+    ```
+1. Run the tests in each Python container you want to test with. For example,
+   for Python 3.14:
+    ```
+    docker exec xdmod-data-python-3.14 python3 ./tests/scripts/run_tests.py
+    ```
+1. Changing the code locally will automatically update it in the docker
+   container because the Docker Compose application stack includes shared
+   volumes.
+1. If you want to run specific Pytest test(s), include it/them as arguments to
+   `run_tests.py`. For example:
+    ```
+    docker exec xdmod-data-python-3.14 python3 ./tests/scripts/run_tests.py tests/pytest/regression/test_datawarehouse_regression.py::test_get_data[month]
+    ```
+1. You can generate new regression test artifacts by adding the
+   `GENERATE_DATA_FILES` environment variable:
+    ```
+    docker exec -e GENERATE_DATA_FILES=1 xdmod-data-python-3.14 python3 ./tests/scripts/run_tests.py ./tests/pytest/regression
+    ```
+1. If you need to delete the Docker Compose application stack, run:
+    ```
+    python3 ./tests/scripts/docker_compose.py down
+    ```
 
 Linting can be done manually by running the commands in the `lint` job in
-`.circleci/config.yml`.
+`.circleci/generate_config.py`.
 
 To test with the notebooks in `xdmod-notebooks`, you can edit their first code
 cell to replace `xdmod-data` and its version constraints with the following,

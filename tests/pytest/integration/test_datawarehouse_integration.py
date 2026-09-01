@@ -7,8 +7,8 @@ import re
 from xdmod_data.warehouse import DataWarehouse
 
 VALID_XDMOD_HOST = os.environ['XDMOD_HOST']
-XDMOD_VERSION = os.environ['XDMOD_VERSION']
-TOKEN_PATH = '~/.xdmod-data-token'
+XDMOD_CONTAINER = os.environ['XDMOD_CONTAINER']
+TOKEN_PATH = os.environ['TOKEN_PATH']
 INVALID_STR = 'asdlkfjsdlkfisdjkfjd'
 METHOD_PARAMS = {
     'get_data': (
@@ -116,7 +116,7 @@ for method in METHOD_PARAMS:
             key_error_test_params += [(method, {'filters': value}, match)]
 
 
-load_dotenv(Path(os.path.expanduser(TOKEN_PATH)), override=True)
+load_dotenv(Path(TOKEN_PATH).expanduser(), override=True)
 
 
 @pytest.fixture(scope='module')
@@ -148,7 +148,7 @@ def __run_method(
     # get_resources is not supported in XDMoD < 11.0.2.
     if (
         method == 'get_resources'
-        and XDMOD_VERSION == 'xdmod-11-0'
+        and XDMOD_CONTAINER == 'v11_0_0-1_0'
         and not testing_exception
     ):
         with pytest.raises(
@@ -487,5 +487,5 @@ def test_get_resources_invalid_service_provider(dw_methods):
         {'service_provider': INVALID_STR},
     )
     # get_resources is not supported in XDMoD < 11.0.2.
-    if XDMOD_VERSION != 'xdmod-11-0':
+    if XDMOD_CONTAINER != 'v11_0_0-1_0':
         assert result == []

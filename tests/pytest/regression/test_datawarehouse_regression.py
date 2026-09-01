@@ -8,11 +8,11 @@ from pathlib import Path
 import pytest
 from xdmod_data.warehouse import DataWarehouse
 
-XDMOD_VERSION = os.environ['XDMOD_VERSION']
-TOKEN_PATH = '~/.xdmod-data-token'
+XDMOD_CONTAINER = os.environ['XDMOD_CONTAINER']
+TOKEN_PATH = os.environ['TOKEN_PATH']
 
 
-load_dotenv(Path(os.path.expanduser(TOKEN_PATH)), override=True)
+load_dotenv(Path(TOKEN_PATH).expanduser(), override=True)
 # When outputting dataframes for debugging, don't truncate any of the output.
 pandas.set_option('display.max_rows', None)
 pandas.set_option('display.max_columns', None)
@@ -56,7 +56,7 @@ def __assert_dfs_equal(
 
 def __get_data_dir(override_default_data=False):
     data_dir = os.path.dirname(__file__) + '/data/' + (
-        XDMOD_VERSION if override_default_data
+        XDMOD_CONTAINER if override_default_data
         else 'default'
     )
     if 'GENERATE_DATA_FILES' in os.environ:  # pragma: no cover
@@ -115,12 +115,12 @@ def test_get_raw_data(valid_dw, capsys, additional_params, number, csv_title):
         dtype='string',
         index_col=0,
         override_default_data=(
-            XDMOD_VERSION in ['xdmod-11-0', 'xdmod-11-0-dev']
+            XDMOD_CONTAINER in ['v11_0_0-1_0', 'xdmod11_0']
         ),
     )
     # This PR added an extra job: https://github.com/ubccr/xdmod/pull/2176
     if (
-        XDMOD_VERSION in ['xdmod-11-0', 'xdmod-11-0-dev']
+        XDMOD_CONTAINER in ['v11_0_0-1_0', 'xdmod11_0']
         and csv_title == 'raw-data-every-1000-no-fields-no-filters.csv'
     ):
         number -= 1
@@ -152,7 +152,7 @@ def test_describe_metrics(valid_dw):
         'jobs-metrics.csv',
         valid_dw.describe_metrics('Jobs'),
         override_default_data=(
-            XDMOD_VERSION in ['xdmod-11-0', 'xdmod-11-0-dev']
+            XDMOD_CONTAINER in ['v11_0_0-1_0', 'xdmod11_0']
         ),
     )
 
@@ -162,7 +162,7 @@ def test_describe_dimensions(valid_dw):
         'jobs-dimensions.csv',
         valid_dw.describe_dimensions('Jobs'),
         override_default_data=(
-            XDMOD_VERSION in ['xdmod-11-0', 'xdmod-11-0-dev']
+            XDMOD_CONTAINER in ['v11_0_0-1_0', 'xdmod11_0']
         ),
     )
 
@@ -209,7 +209,7 @@ def test_get_data(valid_dw, aggregation_unit, data_file):
         columns_name='Metric',
         dtype={'CPU Hours: Total': 'Float64'},
         override_default_data=(
-            XDMOD_VERSION in ['xdmod-11-0', 'xdmod-11-0-dev']
+            XDMOD_CONTAINER in ['v11_0_0-1_0', 'xdmod11_0']
         ),
     )
 
@@ -250,10 +250,11 @@ def test_get_durations(valid_dw):
 
 @pytest.mark.parametrize(
     'service_provider', [[None], ['screw']],
+    ids=('no-service-provider', 'with-service-provider'),
 )
 def test_get_resources(valid_dw, service_provider):
     # get_resources is not supported in XDMoD < 11.0.2.
-    if XDMOD_VERSION != 'xdmod-11-0':
+    if XDMOD_CONTAINER != 'v11_0_0-1_0':
         with open(__get_data_dir() + '/' + 'resources.json') as data_file:
             data = json.load(data_file)
         assert data == valid_dw.get_resources()
