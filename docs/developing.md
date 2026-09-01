@@ -46,10 +46,12 @@ CircleCI setup. You will need to have Docker running and follow these steps:
     ```
     python3 ./tests/scripts/docker_compose.py up
     ```
-1. Set up each of the Python containers you want to test with. For example, for
-   Python 3.8 and Python 3.14:
+1. Install dependencies and set up each of the Python containers you want to
+   test with. For example, for Python 3.8 and Python 3.14:
     ```
+    docker exec xdmod-data-python-3.8 ./tests/scripts/install_dependencies.sh
     docker exec xdmod-data-python-3.8 python3 ./tests/scripts/setup.py
+    docker exec xdmod-data-python-3.14 ./tests/scripts/install_dependencies.sh
     docker exec xdmod-data-python-3.14 python3 ./tests/scripts/setup.py
     ```
 1. If you will be testing the minimum Python version, downgrade the
