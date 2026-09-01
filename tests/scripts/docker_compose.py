@@ -9,10 +9,8 @@ import sys
 if len(sys.argv) == 2 and sys.argv[1] in ["up", "down"]:
     command = sys.argv[1]
 else:
-    sys.exit(
-        f"""Usage: {sys.argv[0]} <command>
-    <command> must be either 'up' or 'down'"""
-    )
+    sys.exit(f"""Usage: {sys.argv[0]} <command>
+    <command> must be either 'up' or 'down'""")
 
 # Import the script for getting config data.
 dir_ = Path(__file__).resolve().parent
