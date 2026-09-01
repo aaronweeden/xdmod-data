@@ -112,11 +112,11 @@ def test_get_raw_data(valid_dw, capsys, additional_params, number, csv_title):
         data,
         dtype="string",
         index_col=0,
-        override_default_data=(XDMOD_CONTAINER in ["v11_0_0-1_0", "xdmod11_0"]),
+        override_default_data=(XDMOD_CONTAINER in ["v11-0-0-1-0", "xdmod11-0"]),
     )
     # This PR added an extra job: https://github.com/ubccr/xdmod/pull/2176
     if (
-        XDMOD_CONTAINER in ["v11_0_0-1_0", "xdmod11_0"]
+        XDMOD_CONTAINER in ["v11-0-0-1-0", "xdmod11-0"]
         and csv_title == "raw-data-every-1000-no-fields-no-filters.csv"
     ):
         number -= 1
@@ -147,7 +147,7 @@ def test_describe_metrics(valid_dw):
     __assert_descriptor_dfs_equal(
         "jobs-metrics.csv",
         valid_dw.describe_metrics("Jobs"),
-        override_default_data=(XDMOD_CONTAINER in ["v11_0_0-1_0", "xdmod11_0"]),
+        override_default_data=(XDMOD_CONTAINER in ["v11-0-0-1-0", "xdmod11-0"]),
     )
 
 
@@ -155,7 +155,7 @@ def test_describe_dimensions(valid_dw):
     __assert_descriptor_dfs_equal(
         "jobs-dimensions.csv",
         valid_dw.describe_dimensions("Jobs"),
-        override_default_data=(XDMOD_CONTAINER in ["v11_0_0-1_0", "xdmod11_0"]),
+        override_default_data=(XDMOD_CONTAINER in ["v11-0-0-1-0", "xdmod11-0"]),
     )
 
 
@@ -200,7 +200,7 @@ def test_get_data(valid_dw, aggregation_unit, data_file):
         index_col="Time",
         columns_name="Metric",
         dtype={"CPU Hours: Total": "Float64"},
-        override_default_data=(XDMOD_CONTAINER in ["v11_0_0-1_0", "xdmod11_0"]),
+        override_default_data=(XDMOD_CONTAINER in ["v11-0-0-1-0", "xdmod11-0"]),
     )
 
 
@@ -245,7 +245,7 @@ def test_get_durations(valid_dw):
 )
 def test_get_resources(valid_dw, service_provider):
     # get_resources is not supported in XDMoD < 11.0.2.
-    if XDMOD_CONTAINER != "v11_0_0-1_0":
+    if XDMOD_CONTAINER != "v11-0-0-1-0":
         with open(__get_data_dir() + "/" + "resources.json") as data_file:
             data = json.load(data_file)
         assert data == valid_dw.get_resources()
