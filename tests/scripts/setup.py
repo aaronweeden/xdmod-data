@@ -8,7 +8,7 @@ import sys
 import warnings
 
 subprocess.run(
-    "python3 -m pip install -e .[report] pytest pytest-cov python-dotenv pyyaml tomli".split(),
+    "python3 -m pip install -e .[report] pytest coverage python-dotenv pyyaml tomli black".split(),
     check=True,
 )
 
@@ -18,9 +18,9 @@ from urllib3.exceptions import InsecureRequestWarning
 from urllib3.util import Retry
 
 # Import the script for getting config data.
-dir_ = Path(__file__).resolve().parent
-if str(dir_) not in sys.path:
-    sys.path.insert(0, str(dir_))
+parent_dir = Path(__file__).resolve().parent
+if str(parent_dir) not in sys.path:
+    sys.path.insert(0, str(parent_dir))
 import get_config
 
 for image in get_config.get_xdmod_images():

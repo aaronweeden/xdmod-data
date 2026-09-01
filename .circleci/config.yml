@@ -10,7 +10,7 @@ jobs:
     docker:
       # Use Python convenience image so pip is available.
       # Version number is arbitrary.
-      - cimg/python:3.14
+      image: cimg/python:3.14
     steps:
       - checkout
       - run:

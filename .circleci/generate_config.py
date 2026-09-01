@@ -5,9 +5,9 @@ from pathlib import Path
 import sys
 
 # Import the script for getting config data.
-dir_ = Path(__file__).resolve().parent / ".." / "tests" / "scripts"
-if str(dir_) not in sys.path:
-    sys.path.insert(0, str(dir_))
+scripts_dir = Path(__file__).resolve().parent / ".." / "tests" / "scripts"
+if str(scripts_dir) not in sys.path:
+    sys.path.insert(0, str(scripts_dir))
 import get_config
 
 # Get Python versions.
@@ -27,9 +27,9 @@ jobs:
       - checkout
       - run:
           name: Install Black and Flake8
-          command: python3 -m pip install --upgrade flake8 black
+          command: python3 -m pip install --upgrade black flake8
       - run:
-          name: Check code style with Black
+          name: Ensure code is formatted with Black
           command: python3 -m black --check --target-version=py{max_python_version.replace('.', '')} .
       - run:
           name: Run Flake8 to check cyclomatic complexity

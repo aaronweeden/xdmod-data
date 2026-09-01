@@ -1,14 +1,5 @@
 # Instructions for developers
 
-## Code style
-
-`xdmod-data` uses [Black](https://github.com/psf/black) for Python code
-formatting. If you install Black and run `black .` from inside your cloned copy
-of `xdmod-data`, it will automatically format all the Python files in the
-project. The CI testing for `xdmod-data` will validate whether the Python files
-have been formatted. Thus, you should run `black` before your Pull Requests
-undergo review.
-
 ## Testing the code
 
 CircleCI will automatically run tests on Pull Requests to the `xdmod-data`
@@ -83,13 +74,16 @@ CircleCI setup. You will need to have Docker running and follow these steps:
     ```
     docker exec -e GENERATE_DATA_FILES=1 xdmod-data-python-3.14 python3 ./tests/scripts/run_tests.py ./tests/pytest/regression
     ```
+1. `xdmod-data` uses [Black](https://github.com/psf/black) for Python code         
+   formatting. The CI testing for `xdmod-data` requires the Python files to be
+   formatted. To format the files, run the following:
+    ```
+    docker exec xdmod-data-python-3.14 python3 ./tests/scripts/format.py
+    ```
 1. If you need to delete the Docker Compose application stack, run:
     ```
     python3 ./tests/scripts/docker_compose.py down
     ```
-
-Linting can be done manually by running the commands in the `lint` job in
-`.circleci/generate_config.py`.
 
 To test with the notebooks in `xdmod-notebooks`, you can edit their first code
 cell to replace `xdmod-data` and its version constraints with the following,

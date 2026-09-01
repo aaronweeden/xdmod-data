@@ -13,9 +13,9 @@ else:
     <command> must be either 'up' or 'down'""")
 
 # Import the script for getting config data.
-dir_ = Path(__file__).resolve().parent
-if str(dir_) not in sys.path:
-    sys.path.insert(0, str(dir_))
+parent_dir = Path(__file__).resolve().parent
+if str(parent_dir) not in sys.path:
+    sys.path.insert(0, str(parent_dir))
 import get_config
 
 # Generate the config.
