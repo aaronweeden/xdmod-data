@@ -65,7 +65,7 @@ CircleCI setup. You will need to have Docker running and follow these steps:
     ```
 
 Additional testing notes:
-- Changing the code locally will automatically update it in the docker
+- Changing the code locally will automatically update it in the Docker
   container because the Docker Compose application stack includes shared
   volumes.
 - If you want to run specific Pytest test(s), include it/them as arguments to

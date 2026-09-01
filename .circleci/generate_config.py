@@ -26,8 +26,8 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Install Black and Flake8
-          command: python3 -m pip install --upgrade black flake8
+          name: Install dependencies
+          command: python3 -m pip install --upgrade black flake8 tomli
       - run:
           name: Lint
           command: ./tests/scripts/lint.sh
