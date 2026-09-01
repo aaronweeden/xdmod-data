@@ -12,6 +12,9 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Install YAML parser
+          command: python3 -m pip install pyyaml
+      - run:
           name: Generate config
           command: python3 .circleci/generate_config.py > generated_config.yml
       - continuation/continue:
