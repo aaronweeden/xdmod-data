@@ -8,7 +8,8 @@ orbs:
 jobs:
   setup:
     docker:
-      # Use Python convenience image so pip is available, version number is arbitrary
+      # Use Python convenience image so pip is available.
+      # Version number is arbitrary.
       - cimg/python:3.14
     steps:
       - checkout
