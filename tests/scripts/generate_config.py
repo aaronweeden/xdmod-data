@@ -1,13 +1,6 @@
 # Generate CircleCI config. This is done so the minimum and maximum Python
 # versions do not have to be redundantly declared in multiple files.
 
-from pathlib import Path
-import sys
-
-# Import the script for getting config data.
-scripts_dir = Path(__file__).resolve().parent / ".." / "tests" / "scripts"
-if str(scripts_dir) not in sys.path:
-    sys.path.insert(0, str(scripts_dir))
 import get_config
 
 # Get Python versions.

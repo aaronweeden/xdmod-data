@@ -14,9 +14,7 @@ jobs:
     steps:
       - checkout
       - run: ./tests/scripts/install_dependencies.sh
-      - run:
-          name: Generate config
-          command: python3 .circleci/generate_config.py > generated_config.yml
+      - run: python3 ./tests/scripts/generate_config.py > generated_config.yml
       - continuation/continue:
           configuration_path: generated_config.yml
 
