@@ -10,6 +10,10 @@ if str(dir_) not in sys.path:
     sys.path.insert(0, str(dir_))
 import get_config
 
+# Get Python versions.
+min_python_version = str(get_config.get_min_python_version())
+max_python_version = str(get_config.get_max_python_version())
+
 # Generate the config.
 output_config = f"""
 version: 2.1
@@ -17,7 +21,7 @@ version: 2.1
 jobs:
   lint:
     docker:
-      - image: cimg/python:{get_config.get_max_python_version()}
+      - image: cimg/python:{max_python_version}
     resource_class: small
     steps:
       - checkout
@@ -26,17 +30,14 @@ jobs:
           command: python3 -m pip install --upgrade flake8 black
       - run:
           name: Check code style with Black
-          command: python3 -m black --check .
+          command: python3 -m black --check --target-version=py{max_python_version.replace('.', '')} .
       - run:
           name: Run Flake8 to check McCabe complexity
           command: python3 -m flake8 --select=C90 --max-complexity=10 .
 """
-for python_version in [
-    get_config.get_min_python_version(),
-    get_config.get_max_python_version(),
-]:
+for python_version in [min_python_version, max_python_version]:
     output_config += f"""
-  test_python_{str(python_version).replace('.', '_')}:
+  test_python_{python_version.replace('.', '_')}:
     docker:
       - image: cimg/python:{python_version}
         name: xdmod-data-python-{python_version}
@@ -52,7 +53,7 @@ for python_version in [
       - checkout
       - run: python3 ./tests/scripts/setup.py
     """
-    if python_version == get_config.get_min_python_version():
+    if python_version == min_python_version:
         output_config += """
       - run: python3 ./tests/scripts/downgrade_dependencies.py
         """
@@ -67,12 +68,9 @@ workflows:
   run_tests:
     jobs:
 """
-for python_version in [
-    get_config.get_min_python_version(),
-    get_config.get_max_python_version(),
-]:
+for python_version in [min_python_version, max_python_version]:
     output_config += f"""
-      - test_python_{str(python_version).replace('.', '_')}
+      - test_python_{python_version.replace('.', '_')}
     """
 
 # Output the config.
