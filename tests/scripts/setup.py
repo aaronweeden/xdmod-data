@@ -9,7 +9,7 @@ import warnings
 parent_dir = Path(__file__).resolve().parent
 
 subprocess.run(
-    "{parent_dir}/install_dependencies.sh".split(),
+    f"{parent_dir}/install_dependencies.sh".split(),
     check=True,
 )
 
