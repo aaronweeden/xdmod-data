@@ -7,7 +7,7 @@ orbs:
 
 jobs:
   setup:
-    executor: continuation/default
+    executor: cimg/python:3.11
     steps:
       - checkout
       - run:
