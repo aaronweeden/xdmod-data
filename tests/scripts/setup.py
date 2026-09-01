@@ -13,7 +13,9 @@ subprocess.run(
 )
 
 import requests
+from requests.adapters import HTTPAdapter
 from urllib3.exceptions import InsecureRequestWarning
+from urllib3.util import Retry
 
 # Import the script for getting config data.
 dir_ = Path(__file__).resolve().parent
@@ -26,6 +28,11 @@ for image in get_config.get_xdmod_images():
     if container_name is None:
         container_name = image
 
+    # Open a requests session that retries a few times to give the XDMoD web
+    # server time to start up.
+    session = requests.Session()
+    session.mount("https://", HTTPAdapter(max_retries=Retry()))
+
     # Get the certificate file from the XDMoD container.
     print(f"Getting certificate file from {container_name}")
     with warnings.catch_warnings():
@@ -34,9 +41,6 @@ for image in get_config.get_xdmod_images():
     response.raise_for_status()
     with open(f"{container_name}.crt", "wb") as cert_file:
         cert_file.write(response.content)
-
-    # Open a requests session.
-    session = requests.Session()
     session.verify = f"{container_name}.crt"
 
     # Get an auth token.
