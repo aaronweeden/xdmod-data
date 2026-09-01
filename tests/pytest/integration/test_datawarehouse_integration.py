@@ -148,7 +148,7 @@ def __run_method(
     # get_resources is not supported in XDMoD < 11.0.2.
     if (
         method == "get_resources"
-        and XDMOD_CONTAINER == "v11_0_0-1_0"
+        and XDMOD_CONTAINER == "v11-0-0-1-0"
         and not testing_exception
     ):
         with pytest.raises(
@@ -488,5 +488,5 @@ def test_get_resources_invalid_service_provider(dw_methods):
         {"service_provider": INVALID_STR},
     )
     # get_resources is not supported in XDMoD < 11.0.2.
-    if XDMOD_CONTAINER != "v11_0_0-1_0":
+    if XDMOD_CONTAINER != "v11-0-0-1-0":
         assert result == []
