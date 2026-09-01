@@ -4,11 +4,11 @@
 from pathlib import Path
 import sys
 
-# Import the functions for getting config data.
+# Import the script for getting config data.
 dir_ = Path(__file__).resolve().parent / ".." / "tests" / "scripts"
 if str(dir_) not in sys.path:
     sys.path.insert(0, str(dir_))
-from get_config import get_min_python_version, get_max_python_version, get_xdmod_images
+import get_config
 
 # Generate the config.
 output_config = f"""
@@ -17,7 +17,7 @@ version: 2.1
 jobs:
   lint:
     docker:
-      - image: cimg/python:{get_max_python_version()}
+      - image: cimg/python:{get_config.get_max_python_version()}
     resource_class: small
     steps:
       - checkout
@@ -28,14 +28,14 @@ jobs:
           name: Run Flake8
           command: python3 -m flake8 . --max-complexity=10 --max-line-length=160 --show-source --exclude __init__.py
 """
-for python_version in [get_min_python_version(), get_max_python_version()]:
+for python_version in [get_config.get_min_python_version(), get_config.get_max_python_version()]:
     output_config += f"""
   test_python_{python_version}:
     docker:
       - image: cimg/python:{python_version}
         name: xdmod-data-python-{python_version}
     """
-    for image in get_xdmod_images():
+    for image in get_config.get_xdmod_images():
         output_config += f"""
       - image: tools-ext-01.ccr.xdmod.org/xdmod:{image}
         name: {image}
@@ -46,7 +46,7 @@ for python_version in [get_min_python_version(), get_max_python_version()]:
       - checkout
       - run: python3 ./tests/scripts/setup.py
     """
-    if python_version == get_min_python_version():
+    if python_version == get_config.get_min_python_version():
         output_config += """
       - run: python3 ./tests/scripts/downgrade_dependencies.py
         """
@@ -61,7 +61,7 @@ workflows:
   run_tests:
     jobs:
 """
-for python_version in [get_min_python_version(), get_max_python_version()]:
+for python_version in [get_config.get_min_python_version(), get_config.get_max_python_version()]:
     output_config += f"""
       - test_python_{python_version}
     """
