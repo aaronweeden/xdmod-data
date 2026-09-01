@@ -2,9 +2,7 @@
 # documented as supported by xdmod-data.
 
 import get_config
-from pathlib import Path
 import subprocess
-import sys
 
 downgraded_dependencies = [
     x.replace(" >= ", "==") for x in get_config.get_dependencies()

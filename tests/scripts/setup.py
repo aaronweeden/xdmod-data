@@ -2,7 +2,6 @@
 # containers.
 
 import get_config
-import sys
 import warnings
 import requests
 from requests.exceptions import RequestException

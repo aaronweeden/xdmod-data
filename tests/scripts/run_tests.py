@@ -2,7 +2,6 @@
 
 import get_config
 import os
-from pathlib import Path
 import subprocess
 import sys
 
