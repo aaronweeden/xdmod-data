@@ -31,7 +31,7 @@ import get_config
 @tenacity.retry(
     retry=tenacity.retry_if_exception_type(RequestException),
     stop=tenacity.stop_after_attempt(60),
-    wait=1,
+    wait=tenacity.wait_fixed(1),
     reraise=True,
 )
 def get_certificate_file(container_name):
