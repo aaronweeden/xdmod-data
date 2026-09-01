@@ -36,7 +36,7 @@ for python_version in [
     get_config.get_max_python_version(),
 ]:
     output_config += f"""
-  test_python_{python_version.replace('.', '_')}:
+  test_python_{str(python_version).replace('.', '_')}:
     docker:
       - image: cimg/python:{python_version}
         name: xdmod-data-python-{python_version}
@@ -72,7 +72,7 @@ for python_version in [
     get_config.get_max_python_version(),
 ]:
     output_config += f"""
-      - test_python_{python_version.replace('.', '_')}
+      - test_python_{str(python_version).replace('.', '_')}
     """
 
 # Output the config.
