@@ -22,11 +22,14 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Install Flake8
-          command: python3 -m pip install --upgrade flake8 flake8-commas flake8-quotes
+          name: Install Black and Flake8
+          command: python3 -m pip install --upgrade flake8 black
       - run:
-          name: Run Flake8
-          command: python3 -m flake8 . --max-complexity=10 --max-line-length=160 --show-source --exclude __init__.py
+          name: Check code style with Black
+          command: python3 -m black --check .
+      - run:
+          name: Run Flake8 to check McCabe complexity
+          command: python3 -m flake8 --select=C90 --max-complexity=10 .
 """
 for python_version in [
     get_config.get_min_python_version(),

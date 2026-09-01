@@ -14,29 +14,29 @@ def test_header():
 
 
 @pytest.mark.parametrize(
-    'docmeta',
+    "docmeta",
     [
         None,
         {
-            'title': 'ACCESS Utilization',
-            'version': 3,
-            'description': (
-                'This report describes utilization information for'
-                + ' ACCESS-allocated compute resources.'
+            "title": "ACCESS Utilization",
+            "version": 3,
+            "description": (
+                "This report describes utilization information for"
+                + " ACCESS-allocated compute resources."
             ),
-            'history': [
-                ['1', '2024-10-23', 'Initial Version.'],
-                ['2', '2025-01-15', 'Updated time range for plots.'],
+            "history": [
+                ["1", "2024-10-23", "Initial Version."],
+                ["2", "2025-01-15", "Updated time range for plots."],
                 [
-                    '3',
-                    '2025-04-03',
-                    'Fix typographic errors, update plot times and'
-                    + ' resource specification for Stampede2.',
+                    "3",
+                    "2025-04-03",
+                    "Fix typographic errors, update plot times and"
+                    + " resource specification for Stampede2.",
                 ],
             ],
         },
     ],
-    ids=['without_docmeta', 'with_docmeta'],
+    ids=["without_docmeta", "with_docmeta"],
 )
 def test_footer(docmeta):
     footer_markdown = footer(docmeta)

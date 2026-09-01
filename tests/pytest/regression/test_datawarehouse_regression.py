@@ -8,19 +8,19 @@ from pathlib import Path
 import pytest
 from xdmod_data.warehouse import DataWarehouse
 
-XDMOD_CONTAINER = os.environ['XDMOD_CONTAINER']
-TOKEN_PATH = os.environ['TOKEN_PATH']
+XDMOD_CONTAINER = os.environ["XDMOD_CONTAINER"]
+TOKEN_PATH = os.environ["TOKEN_PATH"]
 
 
 load_dotenv(Path(TOKEN_PATH).expanduser(), override=True)
 # When outputting dataframes for debugging, don't truncate any of the output.
-pandas.set_option('display.max_rows', None)
-pandas.set_option('display.max_columns', None)
-pandas.set_option('display.width', None)
-pandas.set_option('display.max_colwidth', None)
+pandas.set_option("display.max_rows", None)
+pandas.set_option("display.max_columns", None)
+pandas.set_option("display.width", None)
+pandas.set_option("display.max_colwidth", None)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def valid_dw():
     with DataWarehouse() as dw:
         yield dw
@@ -29,37 +29,38 @@ def valid_dw():
 def __assert_dfs_equal(
     data_file,
     actual,
-    dtype='object',
-    index_col='id',
+    dtype="object",
+    index_col="id",
     columns_name=None,
     override_default_data=False,
 ):
     data_dir = __get_data_dir(override_default_data)
-    if 'GENERATE_DATA_FILES' in os.environ:  # pragma: no cover
-        actual.to_csv(data_dir + '/' + data_file)
+    if "GENERATE_DATA_FILES" in os.environ:  # pragma: no cover
+        actual.to_csv(data_dir + "/" + data_file)
     else:
         expected = pandas.read_csv(
-            data_dir + '/' + data_file,
+            data_dir + "/" + data_file,
             dtype=dtype,
             index_col=index_col,
             keep_default_na=False,
-            na_values=[''],
+            na_values=[""],
         ).fillna(numpy.nan)
-        expected.columns = expected.columns.astype('string')
+        expected.columns = expected.columns.astype("string")
         expected.columns.name = columns_name
-        if index_col == 'Time':
+        if index_col == "Time":
             expected.index = pandas.to_datetime(expected.index)
         assert expected.equals(actual), (
-            '\nEXPECTED:\n' + str(expected) + '\nACTUAL:\n' + str(actual)
+            "\nEXPECTED:\n" + str(expected) + "\nACTUAL:\n" + str(actual)
         )
 
 
 def __get_data_dir(override_default_data=False):
-    data_dir = os.path.dirname(__file__) + '/data/' + (
-        XDMOD_CONTAINER if override_default_data
-        else 'default'
+    data_dir = (
+        os.path.dirname(__file__)
+        + "/data/"
+        + (XDMOD_CONTAINER if override_default_data else "default")
     )
-    if 'GENERATE_DATA_FILES' in os.environ:  # pragma: no cover
+    if "GENERATE_DATA_FILES" in os.environ:  # pragma: no cover
         try:
             os.mkdir(data_dir)
         except FileExistsError:
@@ -68,63 +69,58 @@ def __get_data_dir(override_default_data=False):
 
 
 @pytest.mark.parametrize(
-    'additional_params, number, csv_title',
+    "additional_params, number, csv_title",
     [
         (
             {},
             54749,
-            'raw-data-every-1000-no-fields-no-filters.csv',
+            "raw-data-every-1000-no-fields-no-filters.csv",
         ),
         (
             {
-                'fields':
-                (
-                    'Local Job Id',
-                    'Quality of Service',
-                    'GPUs',
-                    'Start Time',
-                    'Department',
+                "fields": (
+                    "Local Job Id",
+                    "Quality of Service",
+                    "GPUs",
+                    "Start Time",
+                    "Department",
                 ),
-                'filters':
-                {
-                    'Resource':
-                    [
-                        'mortorq',
-                        'frearson',
+                "filters": {
+                    "Resource": [
+                        "mortorq",
+                        "frearson",
                     ],
                 },
             },
             33346,
-            'raw-data-every-1000-with-fields-and-filters.csv',
+            "raw-data-every-1000-with-fields-and-filters.csv",
         ),
     ],
-    ids=('no-fields-and-filters', 'with-fields-and-filters'),
+    ids=("no-fields-and-filters", "with-fields-and-filters"),
 )
 def test_get_raw_data(valid_dw, capsys, additional_params, number, csv_title):
     defult_params = {
-        'duration': ('2016-01-01', '2016-12-31'),
-        'realm': 'Jobs',
-        'show_progress': True,
+        "duration": ("2016-01-01", "2016-12-31"),
+        "realm": "Jobs",
+        "show_progress": True,
     }
     params = {**defult_params, **additional_params}
     data = valid_dw.get_raw_data(**params).iloc[::1000]
-    data.index = data.index.astype('string')
+    data.index = data.index.astype("string")
     __assert_dfs_equal(
         csv_title,
         data,
-        dtype='string',
+        dtype="string",
         index_col=0,
-        override_default_data=(
-            XDMOD_CONTAINER in ['v11_0_0-1_0', 'xdmod11_0']
-        ),
+        override_default_data=(XDMOD_CONTAINER in ["v11_0_0-1_0", "xdmod11_0"]),
     )
     # This PR added an extra job: https://github.com/ubccr/xdmod/pull/2176
     if (
-        XDMOD_CONTAINER in ['v11_0_0-1_0', 'xdmod11_0']
-        and csv_title == 'raw-data-every-1000-no-fields-no-filters.csv'
+        XDMOD_CONTAINER in ["v11_0_0-1_0", "xdmod11_0"]
+        and csv_title == "raw-data-every-1000-no-fields-no-filters.csv"
     ):
         number -= 1
-    assert 'Got ' + str(number) + ' rows...DONE' in capsys.readouterr().out
+    assert "Got " + str(number) + " rows...DONE" in capsys.readouterr().out
 
 
 def __assert_descriptor_dfs_equal(
@@ -135,42 +131,38 @@ def __assert_descriptor_dfs_equal(
     __assert_dfs_equal(
         data_file,
         actual,
-        dtype='string',
+        dtype="string",
         override_default_data=override_default_data,
     )
 
 
 def test_describe_realms(valid_dw):
     __assert_descriptor_dfs_equal(
-        'realms.csv',
+        "realms.csv",
         valid_dw.describe_realms(),
     )
 
 
 def test_describe_metrics(valid_dw):
     __assert_descriptor_dfs_equal(
-        'jobs-metrics.csv',
-        valid_dw.describe_metrics('Jobs'),
-        override_default_data=(
-            XDMOD_CONTAINER in ['v11_0_0-1_0', 'xdmod11_0']
-        ),
+        "jobs-metrics.csv",
+        valid_dw.describe_metrics("Jobs"),
+        override_default_data=(XDMOD_CONTAINER in ["v11_0_0-1_0", "xdmod11_0"]),
     )
 
 
 def test_describe_dimensions(valid_dw):
     __assert_descriptor_dfs_equal(
-        'jobs-dimensions.csv',
-        valid_dw.describe_dimensions('Jobs'),
-        override_default_data=(
-            XDMOD_CONTAINER in ['v11_0_0-1_0', 'xdmod11_0']
-        ),
+        "jobs-dimensions.csv",
+        valid_dw.describe_dimensions("Jobs"),
+        override_default_data=(XDMOD_CONTAINER in ["v11_0_0-1_0", "xdmod11_0"]),
     )
 
 
 def test_get_filter_values(valid_dw):
     __assert_descriptor_dfs_equal(
-        'jobs-pi-group-filter-values.csv',
-        valid_dw.get_filter_values('Jobs', 'PI Group'),
+        "jobs-pi-group-filter-values.csv",
+        valid_dw.get_filter_values("Jobs", "PI Group"),
     )
 
 
@@ -178,65 +170,63 @@ def test_get_data_filter_user(valid_dw):
     # Make sure the filter validation works for a user whose list position is
     # greater than 10000 — this will raise an exception if it doesn't work.
     valid_dw.get_data(
-        duration=('2016-01-01', '2017-12-31'),
-        realm='Jobs',
-        metric='CPU Hours: Total',
-        dataset_type='aggregate',
-        filters={'User': '10332'},
+        duration=("2016-01-01", "2017-12-31"),
+        realm="Jobs",
+        metric="CPU Hours: Total",
+        dataset_type="aggregate",
+        filters={"User": "10332"},
     )
 
 
 @pytest.mark.parametrize(
-    'aggregation_unit,data_file',
+    "aggregation_unit,data_file",
     [
-        ('Month', 'jobs-2016-2017-month.csv'),
-        ('Quarter', 'jobs-2016-2017-quarters.csv'),
-        ('Year', 'jobs-2016-2017-years.csv'),
+        ("Month", "jobs-2016-2017-month.csv"),
+        ("Quarter", "jobs-2016-2017-quarters.csv"),
+        ("Year", "jobs-2016-2017-years.csv"),
     ],
-    ids=('month', 'quarter', 'year'),
+    ids=("month", "quarter", "year"),
 )
 def test_get_data(valid_dw, aggregation_unit, data_file):
     data = valid_dw.get_data(
-        duration=('2016-01-01', '2017-12-31'),
-        realm='Jobs',
-        metric='CPU Hours: Total',
+        duration=("2016-01-01", "2017-12-31"),
+        realm="Jobs",
+        metric="CPU Hours: Total",
         aggregation_unit=aggregation_unit,
     )
     __assert_dfs_equal(
         data_file,
         data,
-        index_col='Time',
-        columns_name='Metric',
-        dtype={'CPU Hours: Total': 'Float64'},
-        override_default_data=(
-            XDMOD_CONTAINER in ['v11_0_0-1_0', 'xdmod11_0']
-        ),
+        index_col="Time",
+        columns_name="Metric",
+        dtype={"CPU Hours: Total": "Float64"},
+        override_default_data=(XDMOD_CONTAINER in ["v11_0_0-1_0", "xdmod11_0"]),
     )
 
 
 def test_get_aggregation_units(valid_dw):
-    expected_agg_units = ('Auto', 'Day', 'Month', 'Quarter', 'Year')
+    expected_agg_units = ("Auto", "Day", "Month", "Quarter", "Year")
     actual_agg_units = valid_dw.get_aggregation_units()
     assert expected_agg_units == actual_agg_units
 
 
 def test_get_durations(valid_dw):
     expected_durations = [
-        'Yesterday',
-        '7 day',
-        '30 day',
-        '90 day',
-        'Month to date',
-        'Previous month',
-        'Quarter to date',
-        'Previous quarter',
-        'Year to date',
-        'Previous year',
-        '1 year',
-        '2 year',
-        '3 year',
-        '5 year',
-        '10 year',
+        "Yesterday",
+        "7 day",
+        "30 day",
+        "90 day",
+        "Month to date",
+        "Previous month",
+        "Quarter to date",
+        "Previous quarter",
+        "Year to date",
+        "Previous year",
+        "1 year",
+        "2 year",
+        "3 year",
+        "5 year",
+        "10 year",
     ]
     today_date = date.today()
     current_year = today_date.year
@@ -249,12 +239,13 @@ def test_get_durations(valid_dw):
 
 
 @pytest.mark.parametrize(
-    'service_provider', [[None], ['screw']],
-    ids=('no-service-provider', 'with-service-provider'),
+    "service_provider",
+    [[None], ["screw"]],
+    ids=("no-service-provider", "with-service-provider"),
 )
 def test_get_resources(valid_dw, service_provider):
     # get_resources is not supported in XDMoD < 11.0.2.
-    if XDMOD_CONTAINER != 'v11_0_0-1_0':
-        with open(__get_data_dir() + '/' + 'resources.json') as data_file:
+    if XDMOD_CONTAINER != "v11_0_0-1_0":
+        with open(__get_data_dir() + "/" + "resources.json") as data_file:
             data = json.load(data_file)
         assert data == valid_dw.get_resources()
