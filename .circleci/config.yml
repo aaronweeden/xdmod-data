@@ -7,7 +7,9 @@ orbs:
 
 jobs:
   setup:
-    executor: continuation/default
+    docker:
+      # Use Python convenience image so pip is available, version number is arbitrary
+      - cimg/python:3.14
     steps:
       - checkout
       - run:
