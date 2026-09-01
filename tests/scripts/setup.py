@@ -8,7 +8,7 @@ import sys
 import warnings
 
 subprocess.run(
-    "python3 -m pip install -e .[report] pytest coverage python-dotenv pyyaml tomli black".split(),
+    "python3 -m pip install -e .[report] pytest coverage python-dotenv pyyaml tomli black flake8".split(),
     check=True,
 )
 
