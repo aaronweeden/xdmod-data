@@ -13,7 +13,7 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Install YAML parser
+          name: Install YAML and TOML parsers
           command: python3 -m pip install pyyaml tomli
       - run:
           name: Generate config
