@@ -1,5 +1,6 @@
 # Set up a Docker Compose application stack for local testing.
 
+import get_config
 from pathlib import Path
 import subprocess
 import sys
@@ -11,15 +12,9 @@ else:
     sys.exit(f"""Usage: {sys.argv[0]} <command>
     <command> must be either 'up' or 'down'""")
 
-# Import the script for getting config data.
-parent_dir = Path(__file__).resolve().parent
-if str(parent_dir) not in sys.path:
-    sys.path.insert(0, str(parent_dir))
-import get_config
-
 # Generate the config.
 docker_compose_config = "services:"
-project_dir = parent_dir / ".." / ".."
+project_dir = Path(__file__).resolve().parent / ".." / ".."
 network_name = get_config.get_network_name(default="xdmod-data-network")
 for python_version in [
     get_config.get_min_python_version(),

@@ -1,5 +1,4 @@
 # Define values for testing.
-# See docs/developing.md for local testing instructions.
 
 max_python_version: 3.14
 xdmod_images:

@@ -1,15 +1,10 @@
 # Run Pytest tests.
 
+import get_config
 import os
 from pathlib import Path
 import subprocess
 import sys
-
-# Import the script for getting config data.
-parent_dir = Path(__file__).resolve().parent
-if str(parent_dir) not in sys.path:
-    sys.path.insert(0, str(parent_dir))
-import get_config
 
 if len(sys.argv) > 1:
     pytest_args = " ".join(sys.argv[1:])

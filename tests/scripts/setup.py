@@ -1,28 +1,13 @@
 # Install xdmod-data in editable mode and get API tokens for each of the XDMoD
 # containers.
 
-from pathlib import Path
-import subprocess
+import get_config
 import sys
 import warnings
-
-parent_dir = Path(__file__).resolve().parent
-
-subprocess.run(
-    f"{parent_dir}/install_dependencies.sh".split(),
-    check=True,
-)
-
 import requests
 from requests.exceptions import RequestException
 from urllib3.exceptions import InsecureRequestWarning
 import tenacity
-
-# Import the script for getting config data.
-parent_dir = Path(__file__).resolve().parent
-if str(parent_dir) not in sys.path:
-    sys.path.insert(0, str(parent_dir))
-import get_config
 
 
 # Define a function for trying to get the self-signed certificate file from the
