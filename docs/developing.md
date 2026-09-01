@@ -1,5 +1,14 @@
 # Instructions for developers
 
+## Code style
+
+`xdmod-data` uses [Black](https://github.com/psf/black) for Python code
+formatting. If you install Black and run `black .` from inside your cloned copy
+of `xdmod-data`, it will automatically format all the Python files in the
+project. The CI testing for `xdmod-data` will validate whether the Python files
+have been formatted. Thus, you should run `black` before your Pull Requests
+undergo review.
+
 ## Testing the code
 
 CircleCI will automatically run tests on Pull Requests to the `xdmod-data`
