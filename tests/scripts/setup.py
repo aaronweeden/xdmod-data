@@ -31,8 +31,7 @@ def get_certificate_file(container_name):
 for image in get_config.get_xdmod_images():
     container_name = get_config.get_container_name(image, default=image)
 
-    # Open a requests session that retries a few times to give the XDMoD web
-    # server time to start up.
+    # Open a requests session.
     session = requests.Session()
 
     # Get the certificate file from the XDMoD container.

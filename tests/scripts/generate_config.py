@@ -37,6 +37,7 @@ for python_version in [min_python_version, max_python_version]:
     resource_class: small
     steps:
       - checkout
+      - run: ./tests/scripts/install_dependencies.sh
       - run: python3 ./tests/scripts/setup.py
     """
     if python_version == min_python_version:
