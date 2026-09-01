@@ -31,7 +31,7 @@ for image in get_config.get_xdmod_images():
     # Open a requests session that retries a few times to give the XDMoD web
     # server time to start up.
     session = requests.Session()
-    session.mount("https://", HTTPAdapter(max_retries=Retry()))
+    session.mount("https://", HTTPAdapter(max_retries=Retry(total=5, backoff_factor=2)))
 
     # Get the certificate file from the XDMoD container.
     print(f"Getting certificate file from {container_name}")
