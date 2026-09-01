@@ -28,7 +28,10 @@ jobs:
           name: Run Flake8
           command: python3 -m flake8 . --max-complexity=10 --max-line-length=160 --show-source --exclude __init__.py
 """
-for python_version in [get_config.get_min_python_version(), get_config.get_max_python_version()]:
+for python_version in [
+    get_config.get_min_python_version(),
+    get_config.get_max_python_version(),
+]:
     output_config += f"""
   test_python_{python_version}:
     docker:
@@ -61,7 +64,10 @@ workflows:
   run_tests:
     jobs:
 """
-for python_version in [get_config.get_min_python_version(), get_config.get_max_python_version()]:
+for python_version in [
+    get_config.get_min_python_version(),
+    get_config.get_max_python_version(),
+]:
     output_config += f"""
       - test_python_{python_version}
     """
