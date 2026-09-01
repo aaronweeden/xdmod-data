@@ -1,5 +1,4 @@
 # Set up a Docker Compose application stack for local testing.
-# See docs/developing.md for local testing instructions.
 
 from pathlib import Path
 import subprocess

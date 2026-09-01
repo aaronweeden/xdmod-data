@@ -29,11 +29,8 @@ jobs:
           name: Install Black and Flake8
           command: python3 -m pip install --upgrade black flake8
       - run:
-          name: Ensure code is formatted with Black
-          command: python3 -m black --check --target-version=py{max_python_version.replace('.', '')} .
-      - run:
-          name: Run Flake8 to check cyclomatic complexity
-          command: python3 -m flake8 --select=C90 --max-complexity=10 .
+          name: Lint
+          command: ./tests/scripts/lint.sh
 """
 for python_version in [min_python_version, max_python_version]:
     output_config += f"""

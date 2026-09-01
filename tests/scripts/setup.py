@@ -1,6 +1,5 @@
 # Install xdmod-data in editable mode and get API tokens for each of the XDMoD
 # containers.
-# See docs/developing.md for local testing instructions.
 
 from pathlib import Path
 import subprocess
@@ -8,20 +7,40 @@ import sys
 import warnings
 
 subprocess.run(
-    "python3 -m pip install -e .[report] pytest coverage python-dotenv pyyaml tomli black flake8".split(),
+    "python3 -m pip install -e .[report] black coverage flake8 pytest python-dotenv pyyaml tenacity tomli".split(),
     check=True,
 )
 
 import requests
-from requests.adapters import HTTPAdapter
+from requests.exceptions import RequestException
 from urllib3.exceptions import InsecureRequestWarning
-from urllib3.util import Retry
+import tenacity
 
 # Import the script for getting config data.
 parent_dir = Path(__file__).resolve().parent
 if str(parent_dir) not in sys.path:
     sys.path.insert(0, str(parent_dir))
 import get_config
+
+
+# Define a function for trying to get the self-signed certificate file from the
+# XDMoD web server every second for up to one minute (this is so the web server
+# has time to start up before making requests to it).
+@tenacity.retry(
+    retry=tenacity.retry_if_exception_type(RequestException),
+    stop=tenacity.stop_after_attempt(60),
+    wait=1,
+    reraise=True,
+)
+def get_certificate_file(container_name):
+    print(f"Getting certificate file from {container_name}")
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore", InsecureRequestWarning)
+        response = requests.get(f"https://{container_name}/localhost.crt", verify=False)
+    response.raise_for_status()
+    with open(f"{container_name}.crt", "wb") as cert_file:
+        cert_file.write(response.content)
+
 
 for image in get_config.get_xdmod_images():
     container_name = get_config.get_container_name(image)
@@ -31,16 +50,9 @@ for image in get_config.get_xdmod_images():
     # Open a requests session that retries a few times to give the XDMoD web
     # server time to start up.
     session = requests.Session()
-    session.mount("https://", HTTPAdapter(max_retries=Retry(total=5, backoff_factor=2)))
 
     # Get the certificate file from the XDMoD container.
-    print(f"Getting certificate file from {container_name}")
-    with warnings.catch_warnings():
-        warnings.simplefilter("ignore", InsecureRequestWarning)
-        response = requests.get(f"https://{container_name}/localhost.crt", verify=False)
-    response.raise_for_status()
-    with open(f"{container_name}.crt", "wb") as cert_file:
-        cert_file.write(response.content)
+    get_certificate_file(container_name)
     session.verify = f"{container_name}.crt"
 
     # Get an auth token.

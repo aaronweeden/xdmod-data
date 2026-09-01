@@ -33,22 +33,23 @@ CircleCI setup. You will need to have Docker running and follow these steps:
     ```yaml
     xdmod_images:
       - xdmod-data-main
-      - xdmod-data-xdmod11_0
-      - xdmod-data-v11_0_0-1_0
+      - xdmod-data-xdmod11-0
+      - xdmod-data-v11-0-0-1-0
     container_names:
-      xdmod-data-xdmod11_0: my_custom_name_1
-      xdmod-data-v11_0_0-1_0: my_custom_name_2
+      xdmod-data-xdmod11-0: my-custom-name-1
+      xdmod-data-v11-0-0-1-0: my-custom-name-2
       python-min: null
-      python-max: my_custom_name_3
-    network: my_custom_name_4
+      python-max: my-custom-name-3
+    network: my-custom-name-4
     ```
 1. Start up the Docker Compose application stack:
     ```
     python3 ./tests/scripts/docker_compose.py up
     ```
 1. Set up each of the Python containers you want to test with. For example, for
-   Python 3.14:
+   Python 3.8 and Python 3.14:
     ```
+    docker exec xdmod-data-python-3.8 python3 ./tests/scripts/setup.py
     docker exec xdmod-data-python-3.14 python3 ./tests/scripts/setup.py
     ```
 1. If you will be testing the minimum Python version, downgrade the
@@ -56,42 +57,48 @@ CircleCI setup. You will need to have Docker running and follow these steps:
     ```
     docker exec xdmod-data-python-3.8 python3 ./tests/scripts/downgrade_dependencies.py
     ```
-1. Run the tests in each Python container you want to test with. For example,
-   for Python 3.14:
+1. Run the tests in each Python container(s) you want to test with. For
+   example, for Python 3.8 and Python 3.14:
     ```
+    docker exec xdmod-data-python-3.8 python3 ./tests/scripts/run_tests.py
     docker exec xdmod-data-python-3.14 python3 ./tests/scripts/run_tests.py
     ```
-1. Changing the code locally will automatically update it in the docker
-   container because the Docker Compose application stack includes shared
-   volumes.
-1. If you want to run specific Pytest test(s), include it/them as arguments to
-   `run_tests.py`. For example:
+
+Additional testing notes:
+- Changing the code locally will automatically update it in the docker
+  container because the Docker Compose application stack includes shared
+  volumes.
+- If you want to run specific Pytest test(s), include it/them as arguments to
+  `run_tests.py`. For example:
     ```
     docker exec xdmod-data-python-3.14 python3 ./tests/scripts/run_tests.py tests/pytest/regression/test_datawarehouse_regression.py::test_get_data[month]
     ```
-1. You can generate new regression test artifacts by adding the
-   `GENERATE_DATA_FILES` environment variable:
+- You can generate new regression test artifacts by adding the
+  `GENERATE_DATA_FILES` environment variable:
     ```
     docker exec -e GENERATE_DATA_FILES=1 xdmod-data-python-3.14 python3 ./tests/scripts/run_tests.py ./tests/pytest/regression
     ```
-1. `xdmod-data` uses [Black](https://github.com/psf/black) for Python code         
-   formatting. The CI testing for `xdmod-data` requires the Python files to be
-   formatted. To format the files, run the following:
+- `xdmod-data` uses [Black](https://github.com/psf/black) for Python code
+  formatting. The CI testing for `xdmod-data` requires the Python files to be
+  formatted. To format the files, run the following:
     ```
     docker exec xdmod-data-python-3.14 python3 ./tests/scripts/format.py
     ```
-1. If you need to delete the Docker Compose application stack, run:
+- To lint the code:
+    ```
+    docker exec xdmod-data-python-3.14 ./tests/scripts/lint.sh
+    ```
+- If you need to delete the Docker Compose application stack, run:
     ```
     python3 ./tests/scripts/docker_compose.py down
     ```
-
-To test with the notebooks in `xdmod-notebooks`, you can edit their first code
-cell to replace `xdmod-data` and its version constraints with the following,
-replacing `username` with your username and `branch-name` with the name of the
-branch:
-```
-git+https://github.com/username/xdmod-data.git@branch-name
-```
+- To test with the notebooks in `xdmod-notebooks`, you can edit their first code
+  cell to replace `xdmod-data` and its version constraints with the following,
+  replacing `username` with your username and `branch-name` with the name of the
+  branch:
+    ```
+    git+https://github.com/username/xdmod-data.git@branch-name
+    ```
 
 ## Contributing a Pull Request (PR)
 

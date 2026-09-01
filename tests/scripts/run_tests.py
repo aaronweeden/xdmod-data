@@ -1,5 +1,4 @@
 # Run Pytest tests.
-# See docs/developing.md for local testing instructions.
 
 import os
 from pathlib import Path

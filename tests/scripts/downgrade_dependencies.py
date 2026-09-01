@@ -1,6 +1,5 @@
 # Downgrade the dependencies of xdmod-data to the lowest versions that are
 # documented as supported by xdmod-data.
-# See docs/developing.md for local testing instructions.
 
 from pathlib import Path
 import subprocess
