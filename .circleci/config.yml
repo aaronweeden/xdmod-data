@@ -13,9 +13,7 @@ jobs:
       - image: cimg/python:3.14
     steps:
       - checkout
-      - run:
-          name: Install YAML and TOML parsers
-          command: python3 -m pip install pyyaml tomli
+      - run: ./tests/scripts/install_dependencies.sh
       - run:
           name: Generate config
           command: python3 .circleci/generate_config.py > generated_config.yml
