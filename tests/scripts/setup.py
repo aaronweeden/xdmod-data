@@ -14,7 +14,7 @@ import tenacity
 # has time to start up before making requests to it).
 @tenacity.retry(
     retry=tenacity.retry_if_exception_type(RequestException),
-    stop=tenacity.stop_after_attempt(60),
+    stop=tenacity.stop_after_attempt(120),
     wait=tenacity.wait_fixed(1),
     reraise=True,
 )
