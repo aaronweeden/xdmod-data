@@ -1,6 +1,7 @@
 import pytest
 import os
 import requests
+import xdmod_data._error_messages as _error_messages
 from xdmod_data.warehouse import DataWarehouse
 
 VALID_XDMOD_HOST = os.environ["XDMOD_HOST"]
@@ -29,10 +30,7 @@ def test___init___TypeError():
     del os.environ["XDMOD_HOST"]
     with pytest.raises(
         TypeError,
-        match=(
-            "`xdmod_host` parameter or `XDMOD_HOST` environment variable must"
-            + " be set."
-        ),
+        match=(_error_messages.MISSING_XDMOD_HOST),
     ):
         DataWarehouse()
     os.environ["XDMOD_HOST"] = xdmod_host
@@ -75,15 +73,7 @@ def test___enter___RuntimeError_xdmod_host_unsupported_protocol():
 def test___enter___RuntimeError_401():
     with pytest.raises(
         RuntimeError,
-        match=(
-            "Error 401: Make sure XDMOD_API_TOKEN is set to a valid API token."
-            + " If running in an XDMoD-hosted JupyterHub, this is likely a"
-            + " server error from the JupyterHub. If not running in an"
-            + " XDMoD-hosted JupyterHub, make sure the `XDMOD_API_TOKEN`"
-            + " environment variable is set before the `DataWarehouse` is"
-            + " constructed; it should be set to a valid API token obtained"
-            + " from the XDMoD portal."
-        ),
+        match=(f"Error 401: {_error_messages.HTTP_401} {_error_messages.JUPYTERHUB}"),
     ):
         with DataWarehouse() as dw:
             dw.describe_realms()
