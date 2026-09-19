@@ -75,7 +75,15 @@ def test___enter___RuntimeError_xdmod_host_unsupported_protocol():
 def test___enter___RuntimeError_401():
     with pytest.raises(
         RuntimeError,
-        match="Error 401: Make sure XDMOD_API_TOKEN is set" + " to a valid API token.",
+        match=(
+            "Error 401: Make sure XDMOD_API_TOKEN is set to a valid API token."
+            + " If running in an XDMoD-hosted JupyterHub, this is likely a"
+            + " server error from the JupyterHub. If not running in an"
+            + " XDMoD-hosted JupyterHub, make sure the `XDMOD_API_TOKEN`"
+            + " environment variable is set before the `DataWarehouse` is"
+            + " constructed; it should be set to a valid API token obtained"
+            + " from the XDMoD portal."
+        ),
     ):
         with DataWarehouse() as dw:
             dw.describe_realms()
