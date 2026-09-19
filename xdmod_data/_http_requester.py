@@ -198,7 +198,7 @@ class _HttpRequester:
             if response.status_code == 401:
                 msg = ": Make sure XDMOD_API_TOKEN is set to a valid API token."
             raise RuntimeError(
-                "Error " + str(response.status_code) + msg + jupyterhub_error_msg,
+                "Error " + str(response.status_code) + msg + " " + jupyterhub_error_msg,
             ) from None
         return response
 
