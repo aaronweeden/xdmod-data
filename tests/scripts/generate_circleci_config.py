@@ -18,8 +18,8 @@ jobs:
     resource_class: small
     steps:
       - checkout
-      - run: ./tests/scripts/install_dependencies.sh
-      - run: ./tests/scripts/lint.sh
+      - run: python3 ./tests/scripts/install_dependencies.py
+      - run: python3 ./tests/scripts/lint.py
 """
 for python_version in [min_python_version, max_python_version]:
     output_config += f"""
@@ -37,7 +37,7 @@ for python_version in [min_python_version, max_python_version]:
     resource_class: small
     steps:
       - checkout
-      - run: ./tests/scripts/install_dependencies.sh
+      - run: python3 ./tests/scripts/install_dependencies.py
       - run: python3 ./tests/scripts/setup.py
     """
     if python_version == min_python_version:

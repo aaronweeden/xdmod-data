@@ -13,7 +13,7 @@ jobs:
       - image: cimg/python:3.14
     steps:
       - checkout
-      - run: ./tests/scripts/install_dependencies.sh
+      - run: python3 ./tests/scripts/install_dependencies.py
       - run: python3 ./tests/scripts/generate_circleci_config.py > generated_config.yml
       - continuation/continue:
           configuration_path: generated_config.yml
