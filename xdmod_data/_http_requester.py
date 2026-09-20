@@ -64,7 +64,9 @@ class _HttpRequester:
                 self.__print_progress_msg(num_rows_read, "DONE\n")
         else:
             try:
-                data, fields = self.__process_raw_data_response(response, params["show_progress"])
+                data, fields = self.__process_raw_data_response(
+                    response, params["show_progress"]
+                )
             except requests.exceptions.ChunkedEncodingError:  # pragma: no cover
                 self.__logger.warning(_error_messages.RAW_DATA_COLLECTION_CLOSED)
         return data, fields
