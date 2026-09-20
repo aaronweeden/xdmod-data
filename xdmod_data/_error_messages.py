@@ -12,6 +12,13 @@ JUPYTERHUB = (
     " obtained from the XDMoD portal."
 )
 
+RAW_DATA_COLLECTION_CLOSED = (
+    "Connection closed before all data were received! You may need to break"
+    " your request into smaller chunks by running `get_raw_data()` multiple"
+    " times with fewer days specified for `duration` and then piecing the"
+    " resulting data frames back together."
+)
+
 
 def GET_RESOURCES(host):
     return (

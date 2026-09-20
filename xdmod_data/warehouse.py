@@ -49,7 +49,6 @@ class DataWarehouse:
             xdmod_host = os.getenv("XDMOD_HOST")
             if xdmod_host is None:
                 raise TypeError(_error_messages.MISSING_XDMOD_HOST) from None
-        self.__http_requester = _HttpRequester(xdmod_host)
         self.__logger = self.__init_logger()
         self.__http_requester = _HttpRequester(xdmod_host, self.__logger)
         self.__descriptors = _Descriptors(self.__http_requester)
@@ -458,9 +457,9 @@ class DataWarehouse:
         return d[realm]["dimensions"][dimension_id]["label"]
 
     def __init_logger(self):
-        logger = logging.getLogger('xdmod_data_warehouse')
+        logger = logging.getLogger("xdmod_data_warehouse")
         logger.setLevel(logging.WARNING)
-        formatter = logging.Formatter('Warning: %(message)s')
+        formatter = logging.Formatter("Warning: %(message)s")
         handler = logging.StreamHandler()
         handler.setFormatter(formatter)
         logger.addHandler(handler)
