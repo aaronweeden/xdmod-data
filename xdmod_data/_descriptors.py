@@ -14,7 +14,7 @@ class _Descriptor:
         realm=None,
     ):
         if self.__cached is None:
-            self.__cached = self._request(self.__http_requester)
+            self.__cached = self._request()
         if realm is not None:
             realm_id = self._get_data_id("realms", realm)
         descriptor = self.__cached
@@ -60,8 +60,8 @@ class _Descriptor:
 
 
 class _AggregateDescriptor(_Descriptor):
-    def _request(self, http_requester):
-        response = http_requester._request_json(
+    def _request(self):
+        response = self.__http_requester._request_json(
             "/controllers/metric_explorer.php",
             {"operation": "get_dw_descripter"},
         )
@@ -85,8 +85,8 @@ class _AggregateDescriptor(_Descriptor):
 
 
 class _RawDescriptor(_Descriptor):
-    def _request(self, http_requester):
-        response = http_requester._request_json(
+    def _request(self):
+        response = self.__http_requester._request_json(
             "/rest/v1/warehouse/export/realms",
         )
         serialized_descriptor = response["data"]
