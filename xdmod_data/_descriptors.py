@@ -46,9 +46,8 @@ class _Descriptor:
             realm,
         )
         if data_id is None:
-            realm_text = f" in the '{realm}' realm" if realm is not None else ""
             raise KeyError(
-                f"Value for `{param_name}` not found{realm_text}: '{value}'",
+                _error_messages.VALUE_NOT_FOUND(param_name, value, realm=realm)
             ) from None
         return data_id
 

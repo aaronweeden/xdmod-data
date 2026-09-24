@@ -192,7 +192,7 @@ def __validate_raw_fields(raw_descriptor, realm, fields):
             field_id = raw_descriptor._get_data_id("fields", field, realm)
             if field_id is None:
                 raise KeyError(
-                    f"Raw field not found in the {realm} realm: '{field}'.",
+                    f"Raw field not found in the '{realm}' realm: '{field}'.",
                 ) from None
             results.append(field_id)
         return results
