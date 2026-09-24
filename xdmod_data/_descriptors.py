@@ -5,7 +5,7 @@ import xdmod_data._validator as _validator
 
 class _Descriptor:
     def __init__(self, http_requester):
-        self.__http_requester = http_requester
+        self._http_requester = http_requester
         self.__cached = None
 
     def _get_data_frame(
@@ -60,7 +60,7 @@ class _Descriptor:
 
 class _AggregateDescriptor(_Descriptor):
     def _request(self):
-        response = self.__http_requester._request_json(
+        response = self._http_requester._request_json(
             "/controllers/metric_explorer.php",
             {"operation": "get_dw_descripter"},
         )
@@ -85,7 +85,7 @@ class _AggregateDescriptor(_Descriptor):
 
 class _RawDescriptor(_Descriptor):
     def _request(self):
-        response = self.__http_requester._request_json(
+        response = self._http_requester._request_json(
             "/rest/v1/warehouse/export/realms",
         )
         serialized_descriptor = response["data"]
