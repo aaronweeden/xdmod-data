@@ -1,7 +1,6 @@
 from datetime import date, timedelta
 import xdmod_data._error_messages as _error_messages
 import xdmod_data._utilities as _utilities
-import warnings
 
 
 def _assert_str(name, value):
