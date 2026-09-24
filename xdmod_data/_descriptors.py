@@ -97,9 +97,8 @@ class _RawDescriptor(_Descriptor):
             result[realm_id]["fields"] = {}
             fields = realm["fields"]
             for field in fields:
-                r = {
+                result[realm_id]["fields"][field["alias"]] = {
                     "label": field["display"],
                     "description": field["documentation"],
                 }
-                result[realm_id]["fields"][field["alias"]] = r
         return result
