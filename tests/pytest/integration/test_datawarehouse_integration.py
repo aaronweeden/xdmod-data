@@ -51,24 +51,38 @@ VALID_VALUES = {
     "show_progress": False,
     "service_provider": "screw",
 }
+
+
+def __get_key_error_test_match(param):
+    realm_text = ""
+    if param in ["metric", "dimension"]:
+        realm_text = f' in the \'{VALID_VALUES["realm"]}\' realm'
+    return f"Value for `{param}` not found{realm_text}: '{INVALID_STR}'"
+
+
 KEY_ERROR_TEST_VALUES_AND_MATCHES = {
-    "duration": (INVALID_STR, "Invalid value for `duration`"),
-    "realm": (INVALID_STR, r"Realm .* not found"),
-    "metric": (INVALID_STR, r"Metric .* not found"),
-    "dimension": (INVALID_STR, r"Dimension .* not found"),
-    "filter_key": ({INVALID_STR: INVALID_STR}, r"Dimension .* not found"),
-    "filter_value": (
-        {VALID_DIMENSION: INVALID_STR},
-        r"Filter value .* not found",
-    ),
-    "dataset_type": (INVALID_STR, "Invalid value for `dataset_type`"),
-    "aggregation_unit": (INVALID_STR, "Invalid value for `aggregation_unit`"),
-    "parameter": (
+    "filters:key": [
+        {INVALID_STR: INVALID_STR},
+        __get_key_error_test_match("dimension"),
+    ],
+    "parameter": [
         INVALID_STR,
         "Parameter .* does not have a list of valid values",
-    ),
-    "field": (INVALID_STR, r"Field .* not found"),
+    ],
 }
+for param in [
+    "duration",
+    "realm",
+    "metric",
+    "dimension",
+    "dataset_type",
+    "aggregation_unit",
+    "field",
+]:
+    KEY_ERROR_TEST_VALUES_AND_MATCHES[param] = [
+        INVALID_STR,
+        __get_key_error_test_match(param),
+    ]
 
 key_error_test_ids = []
 duration_test_ids = []
@@ -111,10 +125,9 @@ for method in METHOD_PARAMS:
             ]
             value_error_test_methods += [method]
     if "filters" in METHOD_PARAMS[method]:
-        for param in ("filter_key", "filter_value"):
-            key_error_test_ids += [method + ":" + param]
-            value, match = KEY_ERROR_TEST_VALUES_AND_MATCHES[param]
-            key_error_test_params += [(method, {"filters": value}, match)]
+        key_error_test_ids += [method + ":filters:key"]
+        value, match = KEY_ERROR_TEST_VALUES_AND_MATCHES["filters:key"]
+        key_error_test_params += [(method, {"filters": value}, match)]
 
 
 load_dotenv(Path(TOKEN_PATH).expanduser(), override=True)
