@@ -182,7 +182,7 @@ def __find_str_in_sequence(value, sequence, label):
         transformed_valid_value = __lowercase_and_remove_spaces(valid_value)
         if transformed_valid_value == transformed_value:
             return valid_value
-    raise KeyError(_error_messages.VALUE_NOT_FOUND(label, value, sequence)) from None
+    raise KeyError(_error_messages.VALUE_NOT_FOUND(label, value, valid_values=sequence)) from None
 
 
 def __validate_raw_fields(raw_descriptor, realm, fields):
@@ -190,10 +190,6 @@ def __validate_raw_fields(raw_descriptor, realm, fields):
         results = []
         for field in fields:
             field_id = raw_descriptor._get_data_id("fields", field, realm)
-            if field_id is None:
-                raise KeyError(
-                    f"Raw field not found in the '{realm}' realm: '{field}'.",
-                ) from None
             results.append(field_id)
         return results
     except TypeError:

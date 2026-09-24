@@ -54,10 +54,10 @@ VALID_VALUES = {
 
 
 def __get_key_error_test_match(param):
-    realm_text = ""
+    realm = None
     if param in ["metric", "dimension"]:
-        realm_text = f' in the \'{VALID_VALUES["realm"]}\' realm'
-    return f"Value for `{param}` not found{realm_text}: '{INVALID_STR}'"
+        realm = VALID_VALUES["realm"]
+    return _error_messages.VALUE_NOT_FOUND(param, INVALID_STR, realm=realm)
 
 
 KEY_ERROR_TEST_VALUES_AND_MATCHES = {

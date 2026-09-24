@@ -4,13 +4,14 @@ MISSING_XDMOD_HOST = (
 
 
 def VALUE_NOT_FOUND(name, value, realm=None, valid_values=None):
+    value_text = "Raw field" if name == "fields" else f"Value for `{name}`"
     realm_text = "" if realm is None else f" in the '{realm}' realm"
     valid_values_sentence = ""
     if valid_values is not None:
         valid_values_str = "', '".join(valid_values)
         valid_values_sentence = f" Value values are: '{valid_values_str}'"
     return (
-        f"Value for `{name}` not found{realm_text}: '{value}'.{valid_values_sentence}"
+        f"{value_text} not found{realm_text}: '{value}'.{valid_values_sentence}"
     )
 
 
