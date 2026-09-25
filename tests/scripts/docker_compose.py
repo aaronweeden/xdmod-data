@@ -59,7 +59,7 @@ networks:
 # Run the Docker Compose command.
 def run(command):
     subprocess.run(
-        f"docker compose -f - {command}".split(),
+        f"docker compose -f - {command} --remove-orphans".split(),
         input=docker_compose_config,
         text=True,
         check=True,
