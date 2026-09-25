@@ -246,6 +246,6 @@ def test_get_durations(valid_dw):
 def test_get_resources(valid_dw, service_provider):
     # get_resources is not supported in XDMoD < 11.0.2.
     if XDMOD_CONTAINER != "v11-0-0-1-0":
-        with open(__get_data_dir() + "/" + "resources.json") as data_file:
+        with open(__get_data_dir() + "/resources.json") as data_file:
             data = json.load(data_file)
         assert data == valid_dw.get_resources()

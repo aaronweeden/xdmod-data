@@ -148,7 +148,7 @@ def __validate_duration(duration):
             start_date, end_date = duration
         except (TypeError, ValueError) as error:
             raise type(error)(
-                "`duration` must be a string or an object" + " with 2 items.",
+                "`duration` must be a string or an object with 2 items.",
             ) from None
     return (start_date, end_date)
 

@@ -75,7 +75,7 @@ def test___enter___RuntimeError_xdmod_host_unsupported_protocol():
 def test___enter___RuntimeError_401():
     with pytest.raises(
         RuntimeError,
-        match="Error 401: Make sure XDMOD_API_TOKEN is set" + " to a valid API token.",
+        match="Error 401: Make sure XDMOD_API_TOKEN is set to a valid API token.",
     ):
         with DataWarehouse() as dw:
             dw.describe_realms()
