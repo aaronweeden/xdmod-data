@@ -42,7 +42,8 @@ CircleCI setup. You will need to have Docker running and follow these steps:
       python-max: my-custom-name-3
     network: my-custom-name-4
     ```
-1. Start up the Docker Compose application stack:
+1. Start up the Docker Compose application stack (this will also pull the
+   latest versions of the images from `tests/config.yml`):
     ```
     python3 ./tests/scripts/docker_compose.py up
     ```

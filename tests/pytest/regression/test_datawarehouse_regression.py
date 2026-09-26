@@ -68,6 +68,18 @@ def __get_data_dir(override_default_data=False):
     return data_dir
 
 
+enumerated_system_usernames = {}
+
+
+def enumerate_system_username(system_username):
+    if system_username in enumerated_system_usernames:
+        number = enumerated_system_usernames[system_username]
+    else:
+        number = len(enumerated_system_usernames)
+        enumerated_system_usernames[system_username] = number
+    return number
+
+
 @pytest.mark.parametrize(
     "additional_params, number, csv_title",
     [
@@ -106,6 +118,13 @@ def test_get_raw_data(valid_dw, capsys, additional_params, number, csv_title):
     }
     params = {**defult_params, **additional_params}
     data = valid_dw.get_raw_data(**params).iloc[::1000]
+    # Deidentified system usernames can change when the XDMoD image is built,
+    # so this assigns unique IDs to each value without needing to know the
+    # exact (deidentified) value.
+    if "System Username (Deidentified)" in data:
+        data["System Username (Deidentified)"] = data[
+            "System Username (Deidentified)"
+        ].apply(enumerate_system_username)
     data.index = data.index.astype("string")
     __assert_dfs_equal(
         csv_title,
