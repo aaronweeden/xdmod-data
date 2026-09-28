@@ -38,3 +38,6 @@ version = {attr = "xdmod_data.__version__"}
 
 [tool.setuptools]
 license-files = ["LICENSE"]
+
+[tool.coverage.report]
+omit = ["tests/scripts/*"]
