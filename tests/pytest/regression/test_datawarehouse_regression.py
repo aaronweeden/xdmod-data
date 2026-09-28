@@ -4,6 +4,7 @@ import json
 import numpy
 import os
 import pandas
+from pandas.testing import assert_frame_equal
 from pathlib import Path
 import pytest
 from xdmod_data.warehouse import DataWarehouse
@@ -49,9 +50,7 @@ def __assert_dfs_equal(
         expected.columns.name = columns_name
         if index_col == "Time":
             expected.index = pandas.to_datetime(expected.index)
-        assert expected.equals(actual), (
-            "\nEXPECTED:\n" + str(expected) + "\nACTUAL:\n" + str(actual)
-        )
+        assert_frame_equal(expected, actual)
 
 
 def __get_data_dir(override_default_data=False):
@@ -124,7 +123,7 @@ def test_get_raw_data(valid_dw, capsys, additional_params, number, csv_title):
     if "System Username (Deidentified)" in data:
         data["System Username (Deidentified)"] = data[
             "System Username (Deidentified)"
-        ].apply(enumerate_system_username)
+        ].apply(enumerate_system_username).astype("string")
     data.index = data.index.astype("string")
     __assert_dfs_equal(
         csv_title,
