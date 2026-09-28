@@ -49,7 +49,7 @@ def __assert_dfs_equal(
         expected.columns = expected.columns.astype("string")
         expected.columns.name = columns_name
         if index_col == "Time":
-            expected.index = pandas.to_datetime(expected.index)
+            expected.index = pandas.to_datetime(expected.index).astype("datetime64[ns]")
         assert_frame_equal(expected, actual)
 
 
@@ -121,9 +121,11 @@ def test_get_raw_data(valid_dw, capsys, additional_params, number, csv_title):
     # so this assigns unique IDs to each value without needing to know the
     # exact (deidentified) value.
     if "System Username (Deidentified)" in data:
-        data["System Username (Deidentified)"] = data[
-            "System Username (Deidentified)"
-        ].apply(enumerate_system_username).astype("string")
+        data["System Username (Deidentified)"] = (
+            data["System Username (Deidentified)"]
+            .apply(enumerate_system_username)
+            .astype("string")
+        )
     data.index = data.index.astype("string")
     __assert_dfs_equal(
         csv_title,
