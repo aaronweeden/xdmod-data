@@ -43,7 +43,8 @@ CircleCI setup. You will need to have Docker running and follow these steps:
     network: my-custom-name-4
     ```
 1. Start up the Docker Compose application stack (this will also pull the
-   latest versions of the images from `tests/config.yml`):
+   latest versions of the images from `tests/config.yml` and install the
+   `tomli` library if needed):
     ```
     python3 ./tests/scripts/docker_compose.py up
     ```
@@ -95,6 +96,8 @@ Additional testing notes:
     ```
     python3 ./tests/scripts/docker_compose.py down
     ```
+- To clean up temporary certificate and token files used for testing, remove
+  the files in `tests/scratch`.
 - To test with the notebooks in `xdmod-notebooks`, you can edit their first code
   cell to replace `xdmod-data` and its version constraints with the following,
   replacing `username` with your username and `branch-name` with the name of the

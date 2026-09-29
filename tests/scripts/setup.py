@@ -2,11 +2,14 @@
 # containers.
 
 import get_config
+from pathlib import Path
 import warnings
 import requests
 from requests.exceptions import RequestException
 from urllib3.exceptions import InsecureRequestWarning
 import tenacity
+
+scratch_dir = (Path(__file__).resolve().parent / ".." / "scratch").resolve()
 
 
 # Define a function for trying to get the self-signed certificate file from the
@@ -19,13 +22,15 @@ import tenacity
     reraise=True,
 )
 def get_certificate_file(container_name):
-    print(f"Getting certificate file from {container_name}", flush=True)
+    filename = f"{scratch_dir}/{container_name}.crt"
+    print(f"Saving certificate file from {container_name} to {filename}", flush=True)
     with warnings.catch_warnings():
         warnings.simplefilter("ignore", InsecureRequestWarning)
         response = requests.get(f"https://{container_name}/localhost.crt", verify=False)
     response.raise_for_status()
-    with open(f"{container_name}.crt", "wb") as cert_file:
+    with open(filename, "wb") as cert_file:
         cert_file.write(response.content)
+    return filename
 
 
 for image in get_config.get_xdmod_images():
@@ -35,8 +40,7 @@ for image in get_config.get_xdmod_images():
     session = requests.Session()
 
     # Get the certificate file from the XDMoD container.
-    get_certificate_file(container_name)
-    session.verify = f"{container_name}.crt"
+    session.verify = get_certificate_file(container_name)
 
     # Get an auth token.
     print(f"Getting auth token from {container_name}", flush=True)
@@ -63,6 +67,7 @@ for image in get_config.get_xdmod_images():
     response.raise_for_status()
 
     # Save the API token to a file.
-    print(f"Saving API token to {container_name}.token", flush=True)
-    with open(f"{container_name}.token", "w") as token_file:
+    token_filename = f"{scratch_dir}/{container_name}.token"
+    print(f"Saving API token to {token_filename}", flush=True)
+    with open(token_filename, "w") as token_file:
         token_file.write(f"XDMOD_API_TOKEN={response.json()['data']['token']}")
