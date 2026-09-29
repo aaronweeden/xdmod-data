@@ -45,7 +45,6 @@ VALID_VALUES = {
     "filters": {VALID_DIMENSION: "phillips"},
     "dataset_type": "timeseries",
     "aggregation_unit": "Auto",
-    "parameter": "duration",
     "fields": ["Nodes"],
     "show_progress": False,
     "service_provider": "screw",
@@ -62,10 +61,6 @@ KEY_ERROR_TEST_VALUES_AND_MATCHES = {
     ),
     "dataset_type": (INVALID_STR, "Invalid value for `dataset_type`"),
     "aggregation_unit": (INVALID_STR, "Invalid value for `aggregation_unit`"),
-    "parameter": (
-        INVALID_STR,
-        "Parameter .* does not have a list of valid values",
-    ),
     "field": (INVALID_STR, r"Field .* not found"),
 }
 
