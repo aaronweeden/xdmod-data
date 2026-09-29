@@ -188,7 +188,7 @@ def test_RuntimeError_outside_context(
         method,
         {},
         RuntimeError,
-        "outside of the runtime context",
+        _error_messages.OUTSIDE_RUNTIME_CONTEXT,
     )
 
 
