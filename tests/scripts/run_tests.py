@@ -12,7 +12,7 @@ scratch_dir = tests_dir / ".."
 if len(sys.argv) > 1:
     pytest_args = " ".join(sys.argv[1:])
 else:
-    pytest_args = "{tests_dir}/pytest/"
+    pytest_args = f"{tests_dir}/pytest/"
 
 # Run the tests against each XDMoD container.
 for image in get_config.get_xdmod_images():
