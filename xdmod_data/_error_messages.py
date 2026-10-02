@@ -17,6 +17,7 @@ JUPYTERHUB = (
     " obtained from the XDMoD portal."
 )
 
+<<<<<<< Updated upstream
 
 def TYPE_ERROR(param, type_description=None):
     if param == "duration":
@@ -26,6 +27,27 @@ def TYPE_ERROR(param, type_description=None):
     elif param == "fields":
         type_description = "sequence of strings"
     return f"`{param}` must be a {type_description}."
+=======
+
+def VALUE_NOT_FOUND(name, value, realm=None, valid_values=None):
+    value_text = "Raw field" if name == "field" else f"Value for `{name}`"
+    realm_text = "" if realm is None else f" in the '{realm}' realm"
+    valid_values_sentence = ""
+    if valid_values is not None:
+        valid_values_str = "', '".join(valid_values)
+        valid_values_sentence = f" Value values are: '{valid_values_str}'"
+    return f"{value_text} not found{realm_text}: '{value}'.{valid_values_sentence}"
+
+
+INVALID_DURATION = "`duration` must be a string or an object with 2 items."
+
+INVALID_FILTERS = (
+    "`filters` must be a mapping whose keys are strings and whose values are"
+    " strings or sequences of strings."
+)
+
+RAW_FIELDS_TYPE_ERROR = "`fields` must be a sequence of strings."
+>>>>>>> Stashed changes
 
 
 def VALUE_NOT_FOUND(name, value, realm=None, dimension=None, valid_values=None):

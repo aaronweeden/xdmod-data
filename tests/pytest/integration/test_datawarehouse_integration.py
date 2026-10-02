@@ -53,8 +53,25 @@ VALID_VALUES = {
 }
 
 
+<<<<<<< Updated upstream
 def __get_key_error_test_values_and_matches():
     result = {}
+=======
+def __get_key_error_test_match(param):
+    realm = None
+    if param in ["metric", "dimension"]:
+        realm = VALID_VALUES["realm"]
+    return _error_messages.VALUE_NOT_FOUND(param, INVALID_STR, realm=realm)
+
+
+def __get_key_error_test_values_and_matches():
+    result = {
+        "parameter": [
+            INVALID_STR,
+            "Parameter .* does not have a list of valid values",
+        ],
+    }
+>>>>>>> Stashed changes
     for param in [
         "duration",
         "realm",
@@ -62,6 +79,7 @@ def __get_key_error_test_values_and_matches():
         "dimension",
         "dataset_type",
         "aggregation_unit",
+<<<<<<< Updated upstream
         "filters:key",
         "filters:value",
         "fields",
@@ -84,6 +102,16 @@ def __get_key_error_test_values_and_matches():
         if param in ["metric", "dimension", "filters:key", "filters:value", "fields"]:
             realm = VALID_VALUES["realm"]
         result[param] = (value, _error_messages.VALUE_NOT_FOUND(name=param_name, value=value, realm=realm, dimension=dimension))
+=======
+        "field",
+    ]:
+        result[param] = [INVALID_STR, __get_key_error_test_match(param)]
+    for param in ['key', 'value']:
+        result[f"filters:{param}"] = [
+            {INVALID_STR: INVALID_STR},
+            __get_key_error_test_match("dimension"),
+        ],
+>>>>>>> Stashed changes
     return result
 
 
@@ -510,3 +538,25 @@ def test_get_resources_invalid_service_provider(dw_methods):
     # get_resources is not supported in XDMoD < 11.0.2.
     if XDMOD_CONTAINER != "v11-0-0-1-0":
         assert result == []
+
+
+def test_raw_field_type_error(dw_methods):
+    __test_exception(
+        dw_methods,
+        "get_raw_data",
+        {"fields": [2]},
+        TypeError,
+        _error_messages.RAW_FIELDS_TYPE_ERROR,
+    )
+
+
+def test_raw_field_not_found(dw_methods):
+    __test_exception(
+        dw_methods,
+        "get_raw_data",
+        {"fields": [INVALID_STR]},
+        KeyError,
+        _error_messages.VALUE_NOT_FOUND(
+            "field", INVALID_STR, realm=VALID_VALUES["realm"]
+        ),
+    )
